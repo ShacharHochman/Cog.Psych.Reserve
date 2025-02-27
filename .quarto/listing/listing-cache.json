@@ -1,0 +1,13 @@
+{
+  "listingMap": {
+    "index.qmd": [
+      "posts",
+      "custom-listing.yaml",
+      "posts/custom-listing.yaml",
+      "posts/custom_listing.yaml"
+    ],
+    "posts/DotProbeReliability/index.qmd": [
+      "B3049D40"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/ShacharHochman/Cog.Psych.Reserved.git
+git push -u origin main
+
+ssh-keygen -t ed25519 -C "Enter file in which to save the key (/Users/shacharhochman/.ssh/id_ed25519): 
+"

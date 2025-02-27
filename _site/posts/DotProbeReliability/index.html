@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Shachar Hochman">
+<meta name="dcterms.date" content="2025-02-27">
+
+<title>The Dot-Probe Task is Probably Fine – CogPsych Reserve</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-6bd9cfa162949bde0a231f530c97869d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">CogPsych Reserve</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="https://www.s-hochman.com"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://code.com"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/shachar-hochman-phd"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://x.com/HochmanShachar"> <i class="bi bi-twitter" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">The Dot-Probe Task is Probably Fine</h1>
+            <p class="subtitle lead">Bayesian modeling of reliability with <code>brms</code></p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">bayesian</div>
+                <div class="quarto-category">reliability</div>
+                <div class="quarto-category">HLM</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Shachar Hochman </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">February 27, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#why-are-we-here" id="toc-why-are-we-here" class="nav-link active" data-scroll-target="#why-are-we-here">Why Are We Here?</a></li>
+  <li><a href="#a-blessing-and-a-curse---the-reliability-paradox" id="toc-a-blessing-and-a-curse---the-reliability-paradox" class="nav-link" data-scroll-target="#a-blessing-and-a-curse---the-reliability-paradox">A Blessing and a Curse - the “Reliability Paradox”</a></li>
+  <li><a href="#on-repelling-the-reliability-curse" id="toc-on-repelling-the-reliability-curse" class="nav-link" data-scroll-target="#on-repelling-the-reliability-curse">On repelling the reliability curse</a>
+  <ul class="collapse">
+  <li><a href="#on-bayesian-hierarchical-models" id="toc-on-bayesian-hierarchical-models" class="nav-link" data-scroll-target="#on-bayesian-hierarchical-models">On Bayesian Hierarchical Models</a></li>
+  </ul></li>
+  <li><a href="#the-case-study-revisiting-the-dot-probe-task" id="toc-the-case-study-revisiting-the-dot-probe-task" class="nav-link" data-scroll-target="#the-case-study-revisiting-the-dot-probe-task">The Case Study: Revisiting the Dot-Probe Task</a></li>
+  <li><a href="#the-rouder-haaf-model" id="toc-the-rouder-haaf-model" class="nav-link" data-scroll-target="#the-rouder-haaf-model">The Rouder-Haaf Model</a>
+  <ul class="collapse">
+  <li><a href="#rouder-haaf-model-in-brms" id="toc-rouder-haaf-model-in-brms" class="nav-link" data-scroll-target="#rouder-haaf-model-in-brms">Rouder-Haaf Model in <code>brms</code></a>
+  <ul class="collapse">
+  <li><a href="#extracting-the-reliability" id="toc-extracting-the-reliability" class="nav-link" data-scroll-target="#extracting-the-reliability">Extracting the reliability</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#the-chen-et-al.-model" id="toc-the-chen-et-al.-model" class="nav-link" data-scroll-target="#the-chen-et-al.-model">The Chen et al.&nbsp;Model</a>
+  <ul class="collapse">
+  <li><a href="#why-model-crosstrial-variance" id="toc-why-model-crosstrial-variance" class="nav-link" data-scroll-target="#why-model-crosstrial-variance">Why Model Cross‐Trial Variance?</a></li>
+  <li><a href="#implementing-chen-et-al.-in-brms" id="toc-implementing-chen-et-al.-in-brms" class="nav-link" data-scroll-target="#implementing-chen-et-al.-in-brms">Implementing Chen et al.&nbsp;in <code>brms</code></a>
+  <ul class="collapse">
+  <li><a href="#extracting-the-reliability-1" id="toc-extracting-the-reliability-1" class="nav-link" data-scroll-target="#extracting-the-reliability-1">Extracting the Reliability</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#what-has-changed" id="toc-what-has-changed" class="nav-link" data-scroll-target="#what-has-changed">What has changed?</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="why-are-we-here" class="level2">
+<h2 class="anchored" data-anchor-id="why-are-we-here">Why Are We Here?</h2>
+<ul>
+<li><p><strong>Goal:</strong> Discuss two methods to detect reliability (of cognitive tasks in this case) using Bayesian hierarchical linear models (HLMs) in <code>brms</code>.</p></li>
+<li><p><strong>Case Study:</strong> The Dot-Probe Task. Contrary to a recent publication that claims the emotional dot-probe task is not a reliable measure, I’ll show that more nuanced modeling suggests the task is probably “fine” reliability-wise.</p></li>
+<li><p><strong>The Bottom Line:</strong> This tutorial-like post demonstrates how Bayesian HLM can fundamentally change reliability assessment. By analyzing trial-level data rather than aggregated scores, these methods can uncover meaningful signal where traditional approaches see only noise—potentially rehabilitating numerous tasks previously deemed psychometrically inadequate.</p></li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+I make assumptions (too)!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>I assume you:</p>
+<ul>
+<li><p>are vaguely familiar with <strong>hierarchical linear models (HLM)</strong> and <strong>Bayesian statistics</strong> <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p></li>
+<li><p>know basic concepts in psychometrics - mainly the idea of “<strong>reliability</strong>”.</p></li>
+</ul>
+<p>This post uses R with a <code>tidyverse</code> approach. My goal is to show how others’ great theoretical works can be applied in <code>brms</code>. If you’re already a fan, welcome. If not, get ready to fall in love!</p>
+</div>
+</div>
+</section>
+<section id="a-blessing-and-a-curse---the-reliability-paradox" class="level2">
+<h2 class="anchored" data-anchor-id="a-blessing-and-a-curse---the-reliability-paradox">A Blessing and a Curse - the “Reliability Paradox”</h2>
+<p>Scientists love finding significant results. Cognitive psychologists, in particular, aim to build “robust tasks”—ones that consistently produce similar significant effects when averaged across participants. When participants perform more similarly (showing less between-subject variance), effects tend to be more stable and therefore significant, leading to happy researchers. But here’s the ironic twist: to get that consistent effect, tasks often get designed or refined until nearly all participants show the same pattern. In other words, cognitive psychologists (perhaps inadvertently) end up with tasks that minimize individual differences.</p>
+<p>This is a thorny situation that reveals itself when researchers try to correlate their robust tasks performance with other measures of individual differences like questionnaires, or performance on other tasks. That’s when they discover there simply isn’t enough variability between participants to work with and to differentiate between their subjects.</p>
+<p>The complexity worsens when the sought-after effect is a difference between two conditions of the same task (i.e., a within-subject condition). Take, for instance, when we measure attentional bias by comparing how quickly people respond to a probe that appears behind threatening versus neutral images—in this case researchers subtract one reaction time (RT; the score from the threatening stimuli) from another (the score from the neutral stimuli) in what’s known as the dot-probe task. This introduces the “reliability of difference scores” problem into play—a well-documented challenge in measuring and understanding change. For both theoretical and statistical reasons, subtracting two within-subjects conditions produces individual difference scores with poor psychometric properties. These scores typically show weak correlations with themselves both when taken across time points (i.e., low test-retest reliability) and within a single administration (i.e., low internal reliability). And here is where the thorn hits again, because if these measures can’t correlate with themselves, how (in the hell) can they correlate with anything else<a href="https://tenor.com/en-GB/view/ru-paul-ru-pauls-drag-race-can-i-get-an-amen-amen-gif-16265919">?</a></p>
+<p>This tension between “robust tasks” (good for group-level effects) and high reliability (good for individual differences) is the heart of the so-called “reliability paradox,” as popularized by <a href="https://rdcu.be/d7pS5">Hedge et al.</a> and <a href="https://doi.org/10.1037/bul0000192">Draheim et al.</a>. These well-rounded and accessible papers explore this paradox in depth, making further elaboration here unnecessary. The key insight here is that, <strong><em>there is an inherent pitfall in the meeting point of the endeavor after robust tasks, difference scores and individual differences</em></strong>.</p>
+</section>
+<section id="on-repelling-the-reliability-curse" class="level2">
+<h2 class="anchored" data-anchor-id="on-repelling-the-reliability-curse">On repelling the reliability curse</h2>
+<p>There are generally two approaches to addressing the reliability paradox:</p>
+<ol type="1">
+<li><p><strong>Better task design</strong> – creating more challenging tasks or developing multiple ways to tap into the construct of interest, thereby generating more within-subjects variation. This direction has already yielded promising results (<a href="https://rdcu.be/d7p8Y">for example</a>).</p></li>
+<li><p><strong>Nuanced Statistical modeling</strong> - analyzing trial-by-trial data with a model (often Bayesian HLM) that explicitly teases out and retains individual differences.</p></li>
+</ol>
+<section id="on-bayesian-hierarchical-models" class="level3">
+<h3 class="anchored" data-anchor-id="on-bayesian-hierarchical-models">On Bayesian Hierarchical Models</h3>
+<p>I won’t re-argue the entire case for Bayesian HLMs here (see footnote 1, <a href="https://m-clark.github.io/posts/2019-05-14-shrinkage-in-mixed-models/">these great materials</a>, <a href="https://haines-lab.com/post/2020-06-13-on-curbing-your-measurement-error/2020-06-13-on-curbing-your-measurement-error/">and don’t miss Nathaniel Haines blog</a>). Suffice it to say that:</p>
+<ul>
+<li><p><u>Trial-Level modeling:</u> Bayesian HLMs are generative models that we will feed trial-by-trial data. This means our models produce informed distributions for each participant in each condition. By considering trial-by-trial variation through this model-informed approach, we get nuanced measures of individual performance—precious information that would be lost in traditional ANOVA-style aggregation.</p></li>
+<li><p><u>Distributional Flexibility:</u> Traditional linear models or ANOVAs assume our measures ultimately follow a Gaussian distribution. With Bayesian HLMs, we can choose distributions that actually match our data. Take RTs, for instance—they’re right-skewed and always positive. We can model this reality using a lognormal distribution (more on this later), allowing individual distributions to follow suit. This capability is particularly valuable for individual differences research.</p></li>
+<li><p><u>Posterior Distribution</u>: the Bayesian philosophy itself offers a distinct advantage. Instead of getting a single reliability value, we get posterior distributions—entire spectrums of possible values. This provides a richer, more nuanced perspective on reliability in our data.</p></li>
+</ul>
+</section>
+</section>
+<section id="the-case-study-revisiting-the-dot-probe-task" class="level2">
+<h2 class="anchored" data-anchor-id="the-case-study-revisiting-the-dot-probe-task">The Case Study: Revisiting the Dot-Probe Task</h2>
+<p><a href="https://doi.org/10.1177/21677026241253826">Xu et al.&nbsp;(2024)</a> have recently provided a compelling case study. They set out to test whether the “emotional dot‐probe task”—a long-standing paradigm in cognitive psychology—can truly capture an attentional bias to threat with any consistency. In a typical trial of the dot-probe task, two images (one threatening, one neutral) are flashed on opposite sides of the screen. After a brief interval, these images disappear and a target (often a letter like “E” or “F”) appears in the location of one of the images. The idea is that if you’re quicker to respond when the target replaces the threat, you’ve got a bias toward threat. Xu et al.&nbsp;took this classic design further by testing 36 variations of the task—tweaking everything from stimulus type (faces, scenes, snakes/spiders) to stimulus orientation (horizontal vs.&nbsp;vertical) and the timing of the stimulus onset asynchronies (SOAs; 100, 500, or 900 ms). Their stark finding: almost all variations of the task produced internal reliability estimates that were essentially zero, suggesting that this task holds little promise for detecting individual differences.</p>
+<p>In this post, I reanalyze a subset of Xu et al.’s data with Bayesian HLM, hypothesizing that a more sophisticated approach might rescue some of that lost individual variance.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pre-processing the Data
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>I took the large datasets from Xu et al.&nbsp;and made several key decisions:</p>
+<ol type="1">
+<li><p>Focusing on Study 1: This study closely examined the reliability of the emotional dot‐probe task, making it ideal for reanalysis.</p></li>
+<li><p>Selecting Task Variants: To ensure a substantial sample size, I combined data from six variants of the task (out of the 36 tested in the paper). All used faces as threatening stimuli on vertical display, differing in their SOAs and whether additional neutral trials were included. Only threat-congruent (TC) and threat-incongruent (TIC) trials were analyzed.</p></li>
+<li><p><u>Data Cleaning and Filtering</u>: Building on Xu et al.’s exclusion criteria—participants with less than 60% accuracy or median RTs under 300 ms—I added a few more:</p></li>
+</ol>
+<ul>
+<li><p>Included only mouse responses to reduce device-related variability.</p></li>
+<li><p>Retained only correct response.</p></li>
+<li><p>Excluded responses faster than 250 ms (likely anticipatory) and slower than 3500 ms (potential distractions).</p></li>
+<li><p>Outliers control: I removed trials where RTs deviated more than 3.29 <a href="https://rdcu.be/d8upF">median absolute deviations from the median</a> per subject and condition.</p></li>
+</ul>
+<p>These are quite conservative steps. While many may not be strictly necessary for individual differences studies, they are standard in classic cognitive task analyses. Our total sample size now is 698 participants (!).</p>
+<p>Here is the R code for the preprocessing:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">%ni%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="fu">Negate</span>(<span class="st">`</span><span class="at">%in%</span><span class="st">`</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>Study_1 <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"openData_study1_trials_102823.csv"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>s1.all.outcomes <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_csv</span>(<span class="st">"openData_study1_outcomes_102823.csv"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Exclude participants with &lt;60% accuracy or median RT &lt;300 ms</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>s1.excluded.id <span class="ot">&lt;-</span> s1.all.outcomes <span class="sc">%&gt;%</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(all_accuracy <span class="sc">&lt;</span> <span class="fl">0.6</span> <span class="sc">|</span> all_medRTc <span class="sc">&lt;</span> <span class="dv">300</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(id)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>Study1_fs <span class="ot">&lt;-</span> Study_1 <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%ni%</span> s1.excluded.id, </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>         condition <span class="sc">!=</span> <span class="st">"practice"</span>, </span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>         resp_type <span class="sc">!=</span> <span class="st">"timeout"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(test_id <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>, <span class="dv">19</span><span class="sc">:</span><span class="dv">21</span>), </span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>         resp_type <span class="sc">==</span> <span class="st">"mouse"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">RT =</span> <span class="fu">as.numeric</span>(rt) <span class="sc">/</span> <span class="dv">1000</span>,  <span class="co"># Convert RT to seconds</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">accuracy =</span> <span class="fu">as.numeric</span>(correct),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">trial.all.type =</span> <span class="fu">row_number</span>(), </span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">split =</span> <span class="fu">as.factor</span>(<span class="fu">ifelse</span>(trial.all.type <span class="sc">%%</span> <span class="dv">2</span> <span class="sc">==</span> <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>)), </span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">condition =</span> <span class="fu">case_when</span>(</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">"TC"</span>,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"TIC"</span>,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">==</span> <span class="dv">3</span> <span class="sc">~</span> <span class="st">"TT"</span>,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">==</span> <span class="dv">4</span> <span class="sc">~</span> <span class="st">"NN"</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>   ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(RT <span class="sc">&gt;</span> <span class="fl">0.25</span>, RT <span class="sc">&lt;</span> <span class="fl">3.5</span>, accuracy <span class="sc">==</span> <span class="dv">1</span>, condition <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"TC"</span>, <span class="st">"TIC"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>   <span class="fu">group_by</span>(id, condition) <span class="sc">%&gt;%</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>   <span class="fu">mutate</span>(<span class="at">Outlier =</span> <span class="fu">c</span>(datawizard<span class="sc">::</span><span class="fu">standardize</span>(RT, <span class="at">robust =</span> <span class="cn">TRUE</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>   <span class="fu">ungroup</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>   <span class="fu">filter</span>(<span class="fu">abs</span>(Outlier) <span class="sc">&lt;</span> <span class="fl">3.29</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-rouder-haaf-model" class="level1">
+<h1>The Rouder-Haaf Model</h1>
+<p><a href="https://rdcu.be/d8uJ4">In their fantastic paper</a>, Rouder and Haaf (2019) propose a Bayesian HLM that resembles a factorial ANOVA—but with a twist that lets us directly extract a reliability coefficient. For a split-half scenario (odd vs.&nbsp;even trials), the model is:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>RT <span class="sc">~</span> split <span class="sc">*</span> condition <span class="sc">+</span> (split <span class="sc">*</span> condition <span class="sc">|</span> subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Which can also be written as:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>RT <span class="sc">~</span> split <span class="sc">+</span> condition <span class="sc">+</span> split<span class="sc">:</span>condition <span class="sc">+</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  (split <span class="sc">+</span> condition <span class="sc">+</span> split<span class="sc">:</span>condition <span class="sc">|</span> subject)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The fixed‐effects part captures overall group trends, while the random‐effects part allows individual participants to deviate from these patterns. This setup is particularly handy for evaluating how each person’s <em>condition</em> effect (threat‐congruent minus threat‐incongruent) remains stable or fluctuates across splits (e.g., odd vs even trials, or different sessions).</p>
+<p>Rouder and Haaf conceptualize reliability as a proportion of variance – essentially asking: <em>How much of the condition effect is preserved after we remove the fluctuations due to the split (or time) effect, relative to the total variability?</em> In their framework:</p>
+<ul>
+<li><p><span class="math inline">\(\sigma_{\omega}^{2}\)</span> is the variance of the random slope for <code>condition|subject</code>, reflecting the stable, overall individual differences in the condition effect.</p></li>
+<li><p><span class="math inline">\(\sigma_{\gamma}^{2}\)</span> is the variance of the random slope for <code>split:condition|subject</code>, capturing how much that condition effect fluctuates from one split (or session) to the next.</p></li>
+</ul>
+<p>They then define reliability as:</p>
+<p><span class="math display">\[
+\rho = \frac{\sigma_{\omega}^{2} - \sigma_{\gamma}^{2}}{\sigma_{\omega}^{2} + \sigma_{\gamma}^{2}}.
+\]</span></p>
+<p>In plain language, the total variance in the condition effect can be thought of as arising from two sources: the consistent part (<span class="math inline">\(\sigma_{\omega}^{2}\)</span>) represents the enduring condition effect, while the fluctuating part (<span class="math inline">\(\sigma_{\gamma}^{2}\)</span>) indicates how much that effect varies over time. The reliability estimate (<span class="math inline">\(\rho\)</span>) is essentially the fraction of the overall condition effect that remains stable after removing the variability due to time. In other words, if most of the variance is consistent, reliability is high; if a large portion is unstable, reliability is low.</p>
+<section id="rouder-haaf-model-in-brms" class="level2">
+<h2 class="anchored" data-anchor-id="rouder-haaf-model-in-brms">Rouder-Haaf Model in <code>brms</code></h2>
+<p>Now that we understand the conceptual framework, let’s see how to implement this in <code>brms</code>. The model specification needs to be careful and precise - we’re dealing with reaction time data that has specific characteristics, and we want to capture best the nature of our measurements:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(brms)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bayestestR)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">"contr.equalprior"</span>, <span class="st">"contr.poly"</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sd"</span>, <span class="at">group =</span> <span class="st">"id"</span>),</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">exponential</span>(<span class="dv">1</span>), <span class="at">class =</span> <span class="st">"sd"</span>, <span class="at">group =</span> <span class="st">"id"</span>, <span class="at">dpar =</span> <span class="st">"sigma"</span>),  </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">class =</span> <span class="st">"b"</span>, <span class="at">dpar =</span> <span class="st">"sigma"</span>),  </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Fixed effects</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="fl">0.1</span>), <span class="at">class =</span> <span class="st">"b"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We start by loading the necessary packages and setting proper sum to zero contrast coding. The <code>contr.equalprior</code> ensures unbiased Bayesian estimation when working with factors - unlike traditional effect or treatment coding which can lead to biased priors (<a href="https://easystats.github.io/bayestestR/articles/bayes_factors.html#contr_bayes">see here for a detailed explanation</a>).</p>
+<p>Next, we define relatively weakly informative priors for all parameters. The random-effects standard deviations (for both the mean and the residual variance) receive&nbsp;<code>exponential(1)</code>, reflecting mild assumptions about individual variability. Meanwhile, the fixed effects for the mean RT are assigned a&nbsp;<code>normal(0, 0.1)</code>&nbsp;prior, implying modest expected effect sizes. Finally, we allow for some uncertainty in the residual standard deviation by placing a&nbsp;<code>normal(0, 1)</code>&nbsp;prior on any parameters governing sigma. These choices are conservative enough to encourage stable estimation, yet flexible enough to capture meaningful individual differences in response times.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>DotProbeModel.RouderHaafModel.RDS <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="fu">bf</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    RT <span class="sc">|</span> <span class="fu">trunc</span>(<span class="at">lb =</span> <span class="fl">0.25</span>, <span class="at">ub =</span> <span class="fl">3.5</span>) <span class="sc">~</span> </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">*</span> split <span class="sc">+</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>      (condition <span class="sc">*</span> split<span class="sc">|</span>p<span class="sc">|</span>id),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      condition <span class="sc">*</span> split <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      (condition <span class="sc">*</span> split<span class="sc">|</span>p<span class="sc">|</span>id)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> priors,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">lognormal</span>(), <span class="at">data =</span> Study1_fs,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">4000</span>, <span class="at">warmup =</span> <span class="dv">2000</span>,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">threads =</span> <span class="fu">threading</span>(<span class="dv">2</span>),</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>,</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>                 <span class="at">max_treedepth=</span><span class="dv">12</span>),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> <span class="dv">0</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The model formula contains several important features:</p>
+<ol type="1">
+<li><p><u>Truncation:</u> <code>trunc(lb = 0.25, ub = 3.5)</code>&nbsp;tells the model our response variable (RT) cannot fall below 0.25 seconds or exceed 3.5 seconds. This matches our preprocessing decisions and helps the model make more accurate predictions by respecting the actual bounds of our data.</p></li>
+<li><p><u>Distribution Choice:</u> <code>family = lognormal()</code> is crucial. Reaction times follow a characteristic right-skewed distribution—they can’t be negative, tend to have a longer right tail, and the variability often increases with the mean. Importantly, the lognormal distribution captures these properties naturally by modeling RTs on the log scale, where effects are multiplicative (e.g., a 10% slowdown instead of ±X ms).</p>
+<p>This multiplicative framework elegantly handles proportional relationships (e.g., a participant slowing by 10% in threat trials retains the same effect size whether their baseline is 500 ms or 1000 ms). In the same vein, reliability estimates derived from the log scale reflect proportional differences. Nevertheless, it is mostly common to report and use absolute differences in raw milliseconds. Later, we’ll reconcile this by converting our reliability estimates to the raw RT scale using posterior predictions—ensuring consistency with Xu et al.’s approach and broader psychometric conventions.</p></li>
+<li><p><u>The Sigma:</u> The&nbsp;<code>sigma ~ condition * split + (condition * split | p | id)</code>&nbsp;part of the formula recognizes that people aren’t just different in their overall consistency, but that their variability can also differ by condition and split. Imagine some participants who remain steady across all conditions, while others might fluctuate more in one condition than another. By letting each participant have their own “baseline consistency” as well as condition- and split-specific effects, we are not just acknowledging that people vary overall—we’re allowing these differences to manifest across different experimental factors, rather than forcing everyone into a single error structure.</p>
+<p>The lognormal distribution already accounts for the fact that reaction times naturally “spread out” as they lengthen (e.g., a 3-second average often has bigger ups/downs than a 1-second average). Here, we go a step further: each person can have a distinct sigma profile for each combination of condition and split—capturing a richer picture of individual differences.</p></li>
+<li><p><u>Correlated Individual Effects:</u> The <code>|p|</code> syntax in both the main formula <code>(condition * split |p|id)</code> and the sigma formula<code>(condition * split |p|id)</code> allows the model to account for an important reality of reaction time data: participants with longer RTs typically also show larger variability in their responses. Instead of assuming independent effects, this structure lets the model estimate <em>correlations</em> between individual differences in mean RTs and response variability. By doing so, it refines individual estimates even further.</p></li>
+</ol>
+<section id="extracting-the-reliability" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-the-reliability">Extracting the reliability</h3>
+<p>Just before examining the reliability using a full Bayesian approach à la “Rouder and Haaf”, let’s look at what we get using the classic method for calculating internal consistency.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The results mirror those reported by Xu et al., showing a nearly zero correlation of -0.019 (and similarly poor results after applying the Spearman-Brown correction) – in fact, slightly negative in this case.</p>
+<p><strong>Now for the main course: Rouder and Haaf reliability estimate.</strong> Using <code>tidybayes</code>, I extract the standard deviations of the random effects for both the congruity effect and the interaction and transforming them to the response scale.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Var.df <span class="ot">&lt;-</span> DotProbeModel1 <span class="sc">%&gt;%</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spread_rvars</span>(sd_id__trial_type1, <span class="st">`</span><span class="at">sd_id__trial_type1:half.all.type1</span><span class="st">`</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>Var.df <span class="ot">&lt;-</span> Var.df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_response_condition1_response =</span> <span class="fu">exp</span>(sd_id__condition1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(sd_id__condition1<span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd_response_interaction_response =</span> <span class="fu">exp</span>(<span class="st">`</span><span class="at">sd_id__condition1:split1</span><span class="st">`</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="dv">2</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="fu">exp</span>(<span class="st">`</span><span class="at">sd_id__condition1:split1</span><span class="st">`</span><span class="sc">^</span><span class="dv">2</span>) <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>I square the standard deviations in order to get variance,</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>Var.df_variance <span class="ot">&lt;-</span> Var.df <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> .<span class="sc">^</span><span class="dv">2</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>and then what I have left is to perform the subtraction and division (the rvars structure makes this remarkably straightforward):</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Rouder.Haaf.numerator <span class="ot">&lt;-</span> </span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  Var.df_variance<span class="sc">$</span>sd_id__trial_type1 <span class="sc">-</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  Var.df_variance<span class="sc">$</span><span class="st">`</span><span class="at">sd_id__trial_type1:half.all.type1</span><span class="st">`</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>Rouder.Haaf.denominator <span class="ot">&lt;-</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  Var.df_variance<span class="sc">$</span>sd_id__trial_type1 <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  Var.df_variance<span class="sc">$</span><span class="st">`</span><span class="at">sd_id__trial_type1:half.all.type1</span><span class="st">`</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>Rouder.Haaf.Reliability <span class="ot">&lt;-</span> Rouder.Haaf.numerator<span class="sc">/</span>Rouder.Haaf.denominator</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This is the posterior reliability coefficient distribution—a distribution of possible values for the reliability coefficient we are estimating, where the density reflects how likely each value is.</p>
+<p>What emerges here, is in my opinion, a fascinating picture of informative Bayesian complexity:</p>
+<ul>
+<li><p>First, we see the remarkable benefits of the Bayesian HLM approach, where 99.96% of the possible reliability values exceed the raw-aggregated value of -0.019. This dramatic difference highlights how traditional aggregation methods might severely underestimate the task’s reliability.</p></li>
+<li><p>At the same time, the actual reliability of the Dot-probe task isn’t definitively established. The 95% credible interval suggests reliability values range from 0.43 to a practically perfect 1. While this wide posterior distribution indicates considerable uncertainty about the task’s reliability, it also allows us to make informed probability statements about specific thresholds. Based on the posterior distribution, there’s a 85.72% chance that the Dot-probe task reliability exceeds 0.6, a 77.65% chance it exceeds 0.7, and a 65.79% chance it exceeds 0.8. Such nuanced probabilistic conclusions aren’t possible with classic models and give researchers the tools to make reasoned decisions.</p></li>
+<li><p>But what’s the most likely reliability? The Maximum A Posteriori probability estimate (MAP) point estimates follows for the most likely value and in this case indicates on practically perfect reliability of 0.998. More conservative estimates include the median at 0.892 and the mean at 0.823. All these point estimates suggest the task is substantially more reliable than previously thought, with even the most conservative estimate showing strong reliability.</p></li>
+</ul>
+<p>Reminder: our example deals with “split-half” reliability, a type of “internal consistency”. It typically exceeds what you’d get with, for example, a test–retest scenario (different sessions, potential fatigue effects, etc.), so you might consider the values here as an upper bound on broader “reliability”.</p>
+</section>
+</section>
+</section>
+<section id="the-chen-et-al.-model" class="level1">
+<h1>The Chen et al.&nbsp;Model</h1>
+<p><a href="https://doi.org/10.1016/j.jml.2012.11.001">Chen et al.</a> propose a complementary approach, and focusing on the within-subject trial-level variance. In doing so, they show that ignoring this cross‐trial variance (sometimes referred to as <span class="math inline">\(\sigma_0\)</span>) can lead to systematically underestimated reliability, especially for difference scores.</p>
+<section id="why-model-crosstrial-variance" class="level3">
+<h3 class="anchored" data-anchor-id="why-model-crosstrial-variance">Why Model Cross‐Trial Variance?</h3>
+<p>In many classic cognitive tasks (the dot‐probe included), we observe two major sources of variability:</p>
+<ol type="1">
+<li><strong>Between‐subject</strong>: Some participants consistently differ in how they respond to threat vs neutral stimuli by having larger or smaller effects.</li>
+<li><strong>Within‐subject</strong>: Each participant’s reaction times naturally fluctuate across trials.</li>
+</ol>
+<p>The conventional aggregating approach assume this “within-subject” variance is constant across subject, and by doing so lumps all of a subject’s trials for each condition into a single average, losing any sense of how variable the trials are. Chen et al.&nbsp;call this out as a missed opportunity: <span class="math inline">\(\sigma_0\)</span> is substantial, and a simple average can mask real individual differences, causing reliability measures to drop. In fact, they show that if cross‐trial variance is large relative to cross‐subject variance, a condition‐level analysis can severely underestimate reliability. Bayesian HLM with trial-level data can account for this variance. This provides more precise reliability estimates by incorporating and correctly partitioning that within‐subject trial‐to‐trial noise, rather than discarding it.</p>
+</section>
+<section id="implementing-chen-et-al.-in-brms" class="level2">
+<h2 class="anchored" data-anchor-id="implementing-chen-et-al.-in-brms">Implementing Chen et al.&nbsp;in <code>brms</code></h2>
+<p>Chen et al.&nbsp;take a distinct modeling approach by focusing on how condition effects (TC vs.&nbsp;TIC) vary across splits (odd vs.&nbsp;even trials). Their model omits both the global intercept and main effect of condition, instead modeling how these condition differences manifest through interactions with splits. This parameterization directly captures how stable individual differences in condition effects are across different portions of the task. Here’s how we implement this approach in <code>brms</code>. Rather than using a standard factorial structure (<code>condition + split + condition:split</code>), we separate the random effects into distinct components for splits and condition-by-split interactions:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>DotProbeModel.ChenModel <span class="ot">&lt;-</span> <span class="fu">brm</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="fu">bf</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    RT <span class="sc">|</span> <span class="fu">trunc</span>(<span class="at">lb =</span> <span class="fl">0.25</span>, <span class="at">ub =</span> <span class="fl">3.5</span>) <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      split<span class="sc">+</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      condition<span class="sc">:</span>split<span class="sc">+</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>      (<span class="dv">0</span><span class="sc">+</span>split<span class="sc">|</span>p<span class="sc">|</span>id)<span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>      (<span class="dv">0</span><span class="sc">+</span>split<span class="sc">:</span>condition<span class="sc">|</span>p<span class="sc">|</span>id),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    sigma <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>      split<span class="sc">+</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>      condition<span class="sc">:</span>split<span class="sc">+</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>      (<span class="dv">0</span><span class="sc">+</span>split<span class="sc">|</span>p<span class="sc">|</span>id)<span class="sc">+</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>      (<span class="dv">0</span><span class="sc">+</span>split<span class="sc">:</span>condition<span class="sc">|</span>p<span class="sc">|</span>id)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior =</span> priors,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">lognormal</span>(), <span class="at">data =</span> Study1_fs,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter =</span> <span class="dv">4000</span>, <span class="at">warmup =</span> <span class="dv">2000</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">4</span>,  <span class="at">cores =</span> <span class="dv">4</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">threads =</span> <span class="fu">threading</span>(<span class="dv">2</span>),</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">control =</span> <span class="fu">list</span>(<span class="at">adapt_delta =</span> <span class="fl">0.95</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                 <span class="at">max_treedepth=</span><span class="dv">12</span>),</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">init =</span> <span class="dv">0</span>, <span class="at">backend =</span> <span class="st">"cmdstanr"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="extracting-the-reliability-1" class="level3">
+<h3 class="anchored" data-anchor-id="extracting-the-reliability-1">Extracting the Reliability</h3>
+<p>The Chen et al.&nbsp;approach gives us a reliability estimate by correlating threat bias scores (TIC-TC) between splits. The process mirrors what we typically do in reliability analysis: we compute difference scores for each split level (odd vs even trials) and correlate them, but with an important Bayesian twist - we do this for every posterior draw from our model, giving us a full distribution of reliability estimates instead of just one number. I built on their approach by adding the Spearman-Brown correction - a standard adjustment in psychometrics that accounts for split-half calculations. We need this correction because we’re essentially working with half the data in each split, and it makes our estimates more comparable to full-test reliability. Plus, since Xu et al.&nbsp;used this correction in their original analysis, it lets us make direct comparisons.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate expected RTs (milliseconds) for all splits/conditions</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> tidyr<span class="sc">::</span><span class="fu">expand_grid</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> <span class="fu">unique</span>(Study1_fs<span class="sc">$</span>id),        </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">split =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>),         </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">c</span>(<span class="st">"TIC"</span>, <span class="st">"TC"</span>)          </span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>pred <span class="ot">&lt;-</span> <span class="fu">add_epred_rvars</span>(</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  DotProbeModel.ChenModel,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">newdata =</span> newdata,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">re_formula =</span> <span class="cn">NULL</span>           </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span> </span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">interaction</span>(split, condition, <span class="at">sep =</span> <span class="st">"_"</span>)) </span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute threat bias (TIC - TC) for each split</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>diff_scores <span class="ot">&lt;-</span> pred <span class="sc">%&gt;%</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(id, condition, .epred) <span class="sc">%&gt;%</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> condition, <span class="at">values_from =</span> .epred) <span class="sc">%&gt;%</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Effect_1 =</span> <span class="st">`</span><span class="at">1_TIC</span><span class="st">`</span> <span class="sc">-</span> <span class="st">`</span><span class="at">1_TC</span><span class="st">`</span>,  <span class="co"># Split 1 effect (ms)</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">Effect_2 =</span> <span class="st">`</span><span class="at">2_TIC</span><span class="st">`</span> <span class="sc">-</span> <span class="st">`</span><span class="at">2_TC</span><span class="st">`</span>   <span class="co"># Split 2 effect (ms)</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>  ) </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate reliability per posterior draw</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>cor_results <span class="ot">&lt;-</span> </span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">correlation =</span>  </span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">with</span>(diff_scores, {</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rdo</span>(</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>          <span class="fu">cor</span>(Effect_1, Effect_2)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>          )})) <span class="sc">%&gt;%</span></span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">spearman_brown =</span> (<span class="dv">2</span> <span class="sc">*</span> correlation) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> correlation)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:80.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The posterior distributions reveal 95% credible intervals ranging from 0.41 to 0.81 for the raw correlation, and from 0.59 to 0.91 for the Spearman-Brown corrected reliability, with median estimates of 0.62 and 0.77, respectively. These values suggest moderate to strong reliability, though somewhat lower than the Rouder-Haaf estimates. This difference is instructive – while both approaches support the task’s reliability, they do so through different lenses. The Chen et al.&nbsp;method provides more conservative estimates that may feel more familiar to researchers used to traditional reliability metrics, while still demonstrating substantially higher reliability than previously reported using simpler methods.</p>
+</section>
+</section>
+</section>
+<section id="what-has-changed" class="level1">
+<h1>What has changed?</h1>
+<p>In the first plot here, I presented raw, non-modeled data showing a near-zero correlation—a bleak outlook for the dot-probe task. But as we wrap up this journey, let’s visualize the shift. The Bayesian models reveal a striking twist: what seemed like irredeemable noise in the aggregated scores transforms into a meaningful signal when analyzed trial-by-trial.</p>
+<p><img src="reliability_shift.gif" class="img-fluid" style="width:17.3cm"></p>
+<p>The animation’s&nbsp;<strong>gradient (blue → red)</strong>&nbsp;maps this shift: cooler hues reflect stable participants, where raw scores align closely with model-adjusted estimates, suggesting reliable data. Redder points, however, mark&nbsp;<em>noisy individuals</em>—here, the model significantly adjusts their scores, pulling them toward group-level patterns. This divergence highlights why&nbsp;<strong>trial-level modeling</strong>&nbsp;succeeds where aggregation fails: by accounting for variability within each participant’s trials, the model separates fleeting noise (e.g., momentary lapses) from stable bias scores, transforming a scattered cloud into a coherent signal.</p>
+</section>
+<section id="summary" class="level1">
+<h1>Summary</h1>
+<p>This analysis reveals how sophisticated statistical modeling can uncover reliability where simpler methods suggest none exists. Using two complementary Bayesian hierarchical approaches – the Rouder-Haaf variance decomposition and the Chen et al.&nbsp;correlation-based method – we find that the dot-probe task demonstrates moderate to strong reliability when analyzed appropriately, though with considerable uncertainty in these estimates.</p>
+<p>Three key questions naturally emerge:</p>
+<ol type="1">
+<li><p><strong>Which method is better?</strong></p>
+<p>I don’t know, a good simulation study comparing these methods will have to answer that. From a practical side, both approaches have distinct merits: Rouder-Haaf builds on the common maximal random structure that cognitive researchers are familiar with, allowing extraction of both group (that is, ANOVA-like analyses) and reliable individual differences insights from a single model. Chen et al.’s approach provides the familiar framework of difference scores and Pearson correlations (which can be corrected). At this point, the choice may ultimately depend on specific research needs.</p></li>
+<li><p><strong>If the task effects are reliable indeed (at least “probably fine”), could one use its raw difference scores?</strong></p>
+<p>Unfortunately, no. While we’ve shown the task can be reliable, this reliability is tied specifically to our modeling approach. Remember - reliability is a property of the scores we calculate, not just the task itself. So if we find reliability using these models, we need to stick with model-based scores.</p></li>
+<li><p><strong>What’s next for measurement?</strong></p>
+<p>Earlier, I presented two paths for addressing the reliability paradox: redesigning tasks or using sophisticated statistics. The results here suggest these approaches might be complementary rather than alternative solutions, an iterative process if you will. Indeed, while our models reveal meaningful reliability, the wide credible intervals suggest room for improvement. Combining better measurement practices (like adequate trial numbers) with sophisticated modeling could help us better separate true individual differences from trial-level noise. Put simply, the dot-probe task appears fundamentally sound - it might just need more trials to reach its full potential.</p></li>
+</ol>
+<section id="section" class="level5">
+<h5 class="anchored" data-anchor-id="section"></h5>
+<div class="callout callout-style-simple callout-note no-icon callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<em>Session Info</em>
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sessioninfo<span class="sc">::</span><span class="fu">session_info</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>─ Session info ─────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.4.2 (2024-10-31)
+ os       macOS Ventura 13.3.1
+ system   x86_64, darwin20
+ ui       X11
+ language (EN)
+ collate  en_US.UTF-8
+ ctype    en_US.UTF-8
+ tz       Asia/Jerusalem
+ date     2025-02-27
+ pandoc   3.5 @ /usr/local/bin/ (via rmarkdown)
+ quarto   1.6.40 @ /usr/local/bin/quarto
+
+─ Packages ─────────────────────────────────────────────────────────────────────────────
+ package        * version    date (UTC) lib source
+ abind            1.4-8      2024-09-12 [1] CRAN (R 4.4.1)
+ arrayhelpers     1.1-0      2020-02-04 [1] CRAN (R 4.4.0)
+ backports        1.5.0      2024-05-23 [1] CRAN (R 4.4.0)
+ bayesplot        1.11.1     2024-02-15 [1] CRAN (R 4.4.0)
+ bayestestR     * 0.15.2     2025-02-07 [1] CRAN (R 4.4.1)
+ bit              4.5.0.1    2024-12-03 [1] CRAN (R 4.4.1)
+ bit64            4.6.0-1    2025-01-16 [1] CRAN (R 4.4.1)
+ bridgesampling   1.1-2      2021-04-16 [1] CRAN (R 4.4.0)
+ brms           * 2.22.0     2024-09-23 [1] CRAN (R 4.4.1)
+ Brobdingnag      1.2-9      2022-10-19 [1] CRAN (R 4.4.0)
+ checkmate        2.3.2      2024-07-29 [1] CRAN (R 4.4.0)
+ cli              3.6.4      2025-02-13 [1] CRAN (R 4.4.1)
+ cmdstanr         0.8.1      2025-02-01 [1] https://stan-dev.r-universe.dev (R 4.4.2)
+ coda             0.19-4.1   2024-01-31 [1] CRAN (R 4.4.0)
+ codetools        0.2-20     2024-03-31 [1] CRAN (R 4.4.2)
+ colorspace       2.1-1      2024-07-26 [1] CRAN (R 4.4.0)
+ crayon           1.5.3      2024-06-20 [1] CRAN (R 4.4.0)
+ curl             6.2.0      2025-01-23 [1] CRAN (R 4.4.1)
+ datawizard       1.0.0      2025-01-10 [1] CRAN (R 4.4.1)
+ digest           0.6.37     2024-08-19 [1] CRAN (R 4.4.1)
+ distributional   0.5.0      2024-09-17 [1] CRAN (R 4.4.1)
+ dplyr          * 1.1.4      2023-11-17 [1] CRAN (R 4.4.0)
+ emmeans          1.10.7     2025-01-31 [1] CRAN (R 4.4.1)
+ estimability     1.5.1      2024-05-12 [1] CRAN (R 4.4.0)
+ evaluate         1.0.3      2025-01-10 [1] CRAN (R 4.4.1)
+ farver           2.1.2      2024-05-13 [1] CRAN (R 4.4.0)
+ fastmap          1.2.0      2024-05-15 [1] CRAN (R 4.4.0)
+ forcats        * 1.0.0      2023-01-29 [1] CRAN (R 4.4.0)
+ generics         0.1.3      2022-07-05 [1] CRAN (R 4.4.0)
+ gganimate      * 1.0.9      2024-02-27 [1] CRAN (R 4.4.0)
+ ggdist         * 3.3.2      2024-03-05 [1] CRAN (R 4.4.0)
+ ggplot2        * 3.5.1      2024-04-23 [1] CRAN (R 4.4.0)
+ gifski           1.32.0-1   2024-10-13 [1] CRAN (R 4.4.1)
+ glue             1.8.0      2024-09-30 [1] CRAN (R 4.4.1)
+ gridExtra        2.3        2017-09-09 [1] CRAN (R 4.4.0)
+ gtable           0.3.6      2024-10-25 [1] CRAN (R 4.4.1)
+ hms              1.1.3      2023-03-21 [1] CRAN (R 4.4.0)
+ htmltools        0.5.8.1    2024-04-04 [1] CRAN (R 4.4.0)
+ htmlwidgets      1.6.4      2023-12-06 [1] CRAN (R 4.4.0)
+ inline           0.3.21     2025-01-09 [1] CRAN (R 4.4.1)
+ insight          1.0.2      2025-02-06 [1] CRAN (R 4.4.1)
+ jsonlite         1.8.9      2024-09-20 [1] CRAN (R 4.4.1)
+ knitr            1.49       2024-11-08 [1] CRAN (R 4.4.1)
+ labeling         0.4.3      2023-08-29 [1] CRAN (R 4.4.0)
+ lattice          0.22-6     2024-03-20 [1] CRAN (R 4.4.2)
+ lifecycle        1.0.4      2023-11-07 [1] CRAN (R 4.4.0)
+ loo              2.8.0      2024-07-03 [1] CRAN (R 4.4.0)
+ lubridate      * 1.9.4      2024-12-08 [1] CRAN (R 4.4.1)
+ magrittr         2.0.3      2022-03-30 [1] CRAN (R 4.4.0)
+ MASS             7.3-64     2025-01-04 [1] CRAN (R 4.4.1)
+ Matrix           1.7-2      2025-01-23 [1] CRAN (R 4.4.1)
+ matrixStats      1.5.0      2025-01-07 [1] CRAN (R 4.4.1)
+ mgcv             1.9-1      2023-12-21 [1] CRAN (R 4.4.2)
+ multcomp         1.4-28     2025-01-29 [1] CRAN (R 4.4.1)
+ munsell          0.5.1      2024-04-01 [1] CRAN (R 4.4.0)
+ mvtnorm          1.3-3      2025-01-10 [1] CRAN (R 4.4.1)
+ nlme             3.1-167    2025-01-27 [1] CRAN (R 4.4.1)
+ pillar           1.10.1     2025-01-07 [1] CRAN (R 4.4.1)
+ pkgbuild         1.4.6      2025-01-16 [1] CRAN (R 4.4.1)
+ pkgconfig        2.0.3      2019-09-22 [1] CRAN (R 4.4.0)
+ posterior      * 1.6.0.9000 2025-01-30 [1] https://stan-dev.r-universe.dev (R 4.4.2)
+ prettyunits      1.2.0      2023-09-24 [1] CRAN (R 4.4.0)
+ processx         3.8.5      2025-01-08 [1] CRAN (R 4.4.1)
+ progress         1.2.3      2023-12-06 [1] CRAN (R 4.4.0)
+ ps               1.8.1      2024-10-28 [1] CRAN (R 4.4.1)
+ purrr          * 1.0.4      2025-02-05 [1] CRAN (R 4.4.1)
+ QuickJSR         1.5.1      2025-01-08 [1] CRAN (R 4.4.1)
+ R6               2.6.1      2025-02-15 [1] CRAN (R 4.4.1)
+ Rcpp           * 1.0.14     2025-01-12 [1] CRAN (R 4.4.1)
+ RcppParallel     5.1.10     2025-01-24 [1] CRAN (R 4.4.1)
+ readr          * 2.1.5      2024-01-10 [1] CRAN (R 4.4.0)
+ rlang            1.1.5      2025-01-17 [1] CRAN (R 4.4.1)
+ rmarkdown        2.29       2024-11-04 [1] CRAN (R 4.4.1)
+ rstan          * 2.32.6     2024-03-05 [1] CRAN (R 4.4.1)
+ rstantools       2.4.0      2024-01-31 [1] CRAN (R 4.4.1)
+ rstudioapi       0.17.1     2024-10-22 [1] CRAN (R 4.4.1)
+ sandwich         3.1-1      2024-09-15 [1] CRAN (R 4.4.1)
+ scales           1.3.0      2023-11-28 [1] CRAN (R 4.4.0)
+ sessioninfo      1.2.3      2025-02-05 [1] CRAN (R 4.4.1)
+ StanHeaders    * 2.32.10    2024-07-15 [1] CRAN (R 4.4.1)
+ stringi          1.8.4      2024-05-06 [1] CRAN (R 4.4.0)
+ stringr        * 1.5.1      2023-11-14 [1] CRAN (R 4.4.0)
+ survival         3.8-3      2024-12-17 [1] CRAN (R 4.4.1)
+ svUnit           1.0.6      2021-04-19 [1] CRAN (R 4.4.0)
+ tensorA          0.36.2.1   2023-12-13 [1] CRAN (R 4.4.0)
+ TH.data          1.1-3      2025-01-17 [1] CRAN (R 4.4.1)
+ tibble         * 3.2.1      2023-03-20 [1] CRAN (R 4.4.0)
+ tidybayes      * 3.0.7      2024-09-15 [1] CRAN (R 4.4.1)
+ tidyr          * 1.3.1      2024-01-24 [1] CRAN (R 4.4.0)
+ tidyselect       1.2.1      2024-03-11 [1] CRAN (R 4.4.0)
+ tidyverse      * 2.0.0      2023-02-22 [1] CRAN (R 4.4.0)
+ timechange       0.3.0      2024-01-18 [1] CRAN (R 4.4.0)
+ tweenr           2.0.3      2024-02-26 [1] CRAN (R 4.4.0)
+ tzdb             0.4.0      2023-05-12 [1] CRAN (R 4.4.0)
+ V8               6.0.1      2025-02-02 [1] CRAN (R 4.4.1)
+ vctrs            0.6.5      2023-12-01 [1] CRAN (R 4.4.0)
+ vroom            1.6.5      2023-12-05 [1] CRAN (R 4.4.0)
+ withr            3.0.2      2024-10-28 [1] CRAN (R 4.4.1)
+ xfun             0.50       2025-01-07 [1] CRAN (R 4.4.1)
+ xtable           1.8-4      2019-04-21 [1] CRAN (R 4.4.1)
+ yaml             2.3.10     2024-07-26 [1] CRAN (R 4.4.0)
+ zoo              1.8-12     2023-04-13 [1] CRAN (R 4.4.0)
+
+ [1] /Library/Frameworks/R.framework/Versions/4.4-x86_64/Resources/library
+ * ── Packages attached to the search path.
+
+────────────────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>If you’re wondering how to familiarize yourself with this material, I recommend starting with the excellent book <a href="https://a.co/d/hd7utNs">“A Student’s Guide to Bayesian Statistics” by Ben Lambert</a>, which offers a fantastic introduction, especially for those with some understanding of frequentist statistics. Now, I’m a spiral learner—I often need to revisit concepts from different perspectives. With that in mind, I suggest following up with <a href="https://a.co/d/hv38sCG">“Statistical Rethinking”</a> and/or <a href="https://a.co/d/6EG8AhU">“Doing Bayesian Data Analysis”</a>, alongside the legendary bookdowns by <a href="https://solomonkurz.netlify.app/book/">Solomon Kurz</a> — As the title of the callout probably reveals, I am a fan of his writings.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
