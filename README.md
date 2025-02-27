@@ -1,1 +1,3 @@
-# Cog.Psych.Reserved
+# Cog Psych Reserve
+
+My blog's github :)
