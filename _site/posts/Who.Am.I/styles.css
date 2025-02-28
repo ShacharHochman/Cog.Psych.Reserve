@@ -1,0 +1,21 @@
+/* Custom styles for the about page */
+  .greeting {
+    color: #2c3e50;
+      font-size: 2.2em;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+.connect {
+  background: #f8f9fa;
+    border-left: 4px solid #0066cc;
+  padding: 1rem;
+  margin-top: 2rem;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Make paragraphs more readable */
+  p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
