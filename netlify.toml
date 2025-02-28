@@ -2,14 +2,7 @@
   publish = "_site"
   functions = "netlify/functions"
 
-[[plugins]]
-  package = "netlify-plugin-quarto"
-  [plugins.inputs]
-    version = "1.6.40"  # Match your local version
-
 [[headers]]
   for = "/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST"
-    Access-Control-Allow-Headers = "Content-Type"
