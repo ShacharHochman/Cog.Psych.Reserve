@@ -1,10 +1,11 @@
 [build]
   publish = "_site"
   functions = "netlify/functions"
-  command = "quarto render"
 
 [[plugins]]
-  package = "@quarto/netlify-plugin-quarto"
+  package = "netlify-plugin-quarto"
+  [plugins.inputs]
+    version = "1.6.40"  # Match your local version
 
 [[headers]]
   for = "/*"
