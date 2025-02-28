@@ -1,70 +1,42 @@
-<section class="comments">
-  <h2>Leave a Comment</h2>
+async function submitComment() {
+  const formData = {
+    name: document.getElementById('comment-name').value,
+    email: document.getElementById('comment-email').value,
+    comment: document.getElementById('comment-content').value,
+    postUrl: window.location.pathname
+  };
 
-  <!-- Netlify Form -->
-  <form name="post-comments" netlify netlify-honeypot="bot-field" hidden>
-    <input type="text" name="name">
-    <input type="email" name="email">
-    <textarea name="comment"></textarea>
-    <input type="hidden" name="post-url" value="{{ page.url }}">
-  </form>
-
-  <!-- Visible Form -->
-  <div class="comment-form">
-    <input type="text" id="name" placeholder="Name" required>
-    <input type="email" id="email" placeholder="Email (optional)">
-    <textarea id="comment" placeholder="Your comment..." required></textarea>
-    <button onclick="submitComment()">Post Comment</button>
-  </div>
-
-  <!-- Comments List -->
-  <div class="comments-list">
-    <!-- Dynamically populated -->
-  </div>
-
-  <style>
-    .comments { max-width: 800px; margin: 2rem auto; padding: 1rem; }
-    .comment-form { display: grid; gap: 1rem; }
-    input, textarea { padding: 0.5rem; border: 1px solid #ddd; }
-    button { padding: 0.5rem 1rem; background: #007bff; color: white; border: none; }
-    .comment { padding: 1rem; margin: 1rem 0; background: #f8f9fa; }
-  </style>
-
-  <script>
-  async function submitComment() {
-    const comment = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      comment: document.getElementById('comment').value,
-      "post-url": window.location.pathname
-    };
-
-    await fetch('/', {
+  try {
+    await fetch('/.netlify/functions/submit-comment', {
       method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: new URLSearchParams(comment).toString()
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData)
     });
 
-    // Clear form
-    document.querySelector('.comment-form').reset();
+    // Clear form and reload comments
+    document.getElementById('comment-content').value = '';
     loadComments();
+  } catch (error) {
+    console.error('Error:', error);
   }
+}
 
-  async function loadComments() {
-    const response = await fetch(`/.netlify/functions/get-comments?post=${encodeURIComponent(window.location.pathname)}`);
+async function loadComments() {
+  try {
+    const response = await fetch(`/.netlify/functions/get-comments?postUrl=${encodeURIComponent(window.location.pathname)}`);
     const comments = await response.json();
 
-    const container = document.querySelector('.comments-list');
-    container.innerHTML = comments.map(c => `
+    const container = document.querySelector('.comment-list');
+    container.innerHTML = comments.map(comment => `
       <div class="comment">
-        <h4>${c.name}</h4>
-        <p>${c.comment}</p>
-        <small>${new Date(c.date).toLocaleDateString()}</small>
+        <h4>${comment.name}</h4>
+        <p>${comment.comment}</p>
+        <small>${new Date(comment.date).toLocaleDateString()}</small>
       </div>
     `).join('');
+  } catch (error) {
+    console.error('Error loading comments:', error);
   }
-
-  // Load comments when page loads
-  window.addEventListener('DOMContentLoaded', loadComments);
-  </script>
-</section>
+}

@@ -1,13 +1,18 @@
 exports.handler = async (event) => {
-  const { post } = event.queryStringParameters;
+  const { postUrl } = event.queryStringParameters;
 
-  // Your existing code to fetch comments, then filter:
-  const comments = submissions.filter(s =>
-    s.data['post-url'] === post
+  const client = new NetlifyAPI(process.env.NETLIFY_ACCESS_TOKEN);
+  const submissions = await client.listFormSubmissions({
+    formId: 'comments',
+    siteId: process.env.SITE_ID
+  });
+
+  const filtered = submissions.filter(s =>
+    s.data.postUrl === postUrl
   );
 
   return {
     statusCode: 200,
-    body: JSON.stringify(comments)
+    body: JSON.stringify(filtered)
   };
 };

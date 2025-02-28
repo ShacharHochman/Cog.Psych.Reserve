@@ -18,6 +18,9 @@ format:
       - cosmo
       - brand
     css: styles.css
-    include-after-body: _includes/comments.html
+    include-after-body: |
+      {{ if page.url | includes "/posts/" }}
+        {{ partial "comments.html" . }}
+      {{ end }}
 execute:
   freeze: auto
