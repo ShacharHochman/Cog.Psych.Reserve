@@ -72,7 +72,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <link rel="stylesheet" href="../../styles.css">
-<link rel="stylesheet" href="_includes/comments.css">
 <link rel="stylesheet" href="styles.css">
 </head>
 
@@ -167,9 +166,9 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="hey-i-am-shachar" class="level1 greeting">
-<h1 class="greeting">Hey! I am Shachar!</h1>
-<p>After completing my PhD in cognitive psychology (HUJI &amp; BGU) and postdoc at the University of Surrey in 2024, I’ve stepped beyond the boundaries of academic mind research. I’m now applying the complex behavioral modeling, psychometrics, and advanced statistical techniques that I developed studying cognition in new domains.</p>
+<section id="hey-i-am-shachar" class="level1">
+<h1>Hey! I am Shachar!</h1>
+<p>After completing my PhD in cognitive psychology (HUJI &amp; BGU) and postdoc at the University of Surrey in 2024, I’ve stepped beyond the boundaries of academic mind-brain-behavior research. I’m now applying the complex behavioral modeling, psychometrics, and advanced statistical techniques that I developed studying cognition in new domains.</p>
 <p>This blog is where I’ll revisit thought-provoking ideas from my cognitive psychology days and also demonstrate how similar approaches can reveal unexpected connections in entirely different fields.</p>
 <div class="connect">
 <p>Feel free to <a href="mailto:shachar.hochman@gmail.com">connect with me</a> if you’re interested in discussing these topics further!</p>
@@ -179,37 +178,6 @@ ul.task-list li input[type="checkbox"] {
 </section>
 
 </main> <!-- /main -->
-<section class="comments">
-  <h2>Discussion</h2>
-
-  <!-- Existing Comments -->
-  {{#if site.data.comments}}
-    {{#each site.data.comments.[page.url]}}
-    <div class="comment">
-      <h4>{{ name }}</h4>
-      <p>{{ comment }}</p>
-      <small>{{ date }}</small>
-    </div>
-    {{/each}}
-  {{/if}}
-
-  <!-- Comment Form -->
-  <form method="post" action="{{ staticman_url }}/comments">
-    <input name="fields[postUrl]" type="hidden" value="{{ page.url }}">
-    <input name="fields[name]" placeholder="Name" required="">
-    <input name="fields[email]" type="email" placeholder="Email (private)">
-    <textarea name="fields[comment]" placeholder="Your insight..." required=""></textarea>
-
-    <!-- REPLACE THESE TWO LINES WITH YOUR KEYS -->
-    <input type="hidden" name="options[reCaptcha][siteKey]" value="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG">
-    <div class="g-recaptcha" data-sitekey="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG"></div>
-    <!-- END REPLACEMENT -->
-
-    <button type="submit">Post Comment</button>
-  </form>
-
-  <script src="https://www.google.com/recaptcha/api.js"></script>
-</section>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

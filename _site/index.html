@@ -129,7 +129,6 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="styles.css">
-<link rel="stylesheet" href="_includes/comments.css">
 </head>
 
 <body class="nav-fixed">
@@ -238,7 +237,7 @@ Shachar Hochman
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="cGVyc29uYWw=" data-listing-date-sort="1740434400000" data-listing-file-modified-sort="1740780671600" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="88">
+<div class="quarto-post image-right" data-index="1" data-categories="cGVyc29uYWw=" data-listing-date-sort="1740434400000" data-listing-file-modified-sort="1740842208518" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1" data-listing-word-count-sort="88">
 <div class="thumbnail">
 <p><a href="./posts/Who.Am.I/index.html" class="no-external"></a></p><a href="./posts/Who.Am.I/index.html" class="no-external">
 <p><img loading="lazy" src="./posts/Who.Am.I/profile.jpg" class="thumbnail-image" style="height: 200px;"></p>
@@ -271,37 +270,6 @@ Shachar Hochman
 No matching items
 </div>
 </div></main> <!-- /main -->
-<section class="comments">
-  <h2>Discussion</h2>
-
-  <!-- Existing Comments -->
-  {{#if site.data.comments}}
-    {{#each site.data.comments.[page.url]}}
-    <div class="comment">
-      <h4>{{ name }}</h4>
-      <p>{{ comment }}</p>
-      <small>{{ date }}</small>
-    </div>
-    {{/each}}
-  {{/if}}
-
-  <!-- Comment Form -->
-  <form method="post" action="{{ staticman_url }}/comments">
-    <input name="fields[postUrl]" type="hidden" value="{{ page.url }}">
-    <input name="fields[name]" placeholder="Name" required="">
-    <input name="fields[email]" type="email" placeholder="Email (private)">
-    <textarea name="fields[comment]" placeholder="Your insight..." required=""></textarea>
-
-    <!-- REPLACE THESE TWO LINES WITH YOUR KEYS -->
-    <input type="hidden" name="options[reCaptcha][siteKey]" value="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG">
-    <div class="g-recaptcha" data-sitekey="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG"></div>
-    <!-- END REPLACEMENT -->
-
-    <button type="submit">Post Comment</button>
-  </form>
-
-  <script src="https://www.google.com/recaptcha/api.js"></script>
-</section>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

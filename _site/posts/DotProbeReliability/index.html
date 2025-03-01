@@ -134,7 +134,6 @@ window.Quarto = {
 </script>
 
 <link rel="stylesheet" href="../../styles.css">
-<link rel="stylesheet" href="_includes/comments.css">
 </head>
 
 <body class="nav-fixed">
@@ -773,37 +772,6 @@ Pre-processing the Data
 <li id="fn1"><p>If you’re wondering how to familiarize yourself with this material, I recommend starting with the excellent book <a href="https://a.co/d/hd7utNs">“A Student’s Guide to Bayesian Statistics” by Ben Lambert</a>, which offers a fantastic introduction, especially for those with some understanding of frequentist statistics. Now, I’m a spiral learner—I often need to revisit concepts from different perspectives. With that in mind, I suggest following up with <a href="https://a.co/d/hv38sCG">“Statistical Rethinking”</a> and/or <a href="https://a.co/d/6EG8AhU">“Doing Bayesian Data Analysis”</a>, alongside the legendary bookdowns by <a href="https://solomonkurz.netlify.app/book/">Solomon Kurz</a> — As the title of the callout probably reveals, I am a fan of his writings.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
-<section class="comments">
-  <h2>Discussion</h2>
-
-  <!-- Existing Comments -->
-  {{#if site.data.comments}}
-    {{#each site.data.comments.[page.url]}}
-    <div class="comment">
-      <h4>{{ name }}</h4>
-      <p>{{ comment }}</p>
-      <small>{{ date }}</small>
-    </div>
-    {{/each}}
-  {{/if}}
-
-  <!-- Comment Form -->
-  <form method="post" action="{{ staticman_url }}/comments">
-    <input name="fields[postUrl]" type="hidden" value="{{ page.url }}">
-    <input name="fields[name]" placeholder="Name" required="">
-    <input name="fields[email]" type="email" placeholder="Email (private)">
-    <textarea name="fields[comment]" placeholder="Your insight..." required=""></textarea>
-
-    <!-- REPLACE THESE TWO LINES WITH YOUR KEYS -->
-    <input type="hidden" name="options[reCaptcha][siteKey]" value="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG">
-    <div class="g-recaptcha" data-sitekey="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG"></div>
-    <!-- END REPLACEMENT -->
-
-    <button type="submit">Post Comment</button>
-  </form>
-
-  <script src="https://www.google.com/recaptcha/api.js"></script>
-</section>
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

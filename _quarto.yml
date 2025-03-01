@@ -19,12 +19,6 @@ format:
     theme: cosmo
     css:
       - styles.css
-      - _includes/comments.css
-    filters:
-      - include-after-body.lua
-    include-after-body: _includes/comments.html
-    variables:
-      staticman_url:   staticman_url: https://cog-psych-res-app-b43552a94c8b.herokuapp.com/v3/entry/github/ShacharHochman/Cog.Psych.Reserve/main
-
+      
 execute:
   freeze: auto
