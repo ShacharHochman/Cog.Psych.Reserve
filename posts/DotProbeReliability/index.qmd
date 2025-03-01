@@ -4,6 +4,7 @@ subtitle: "Bayesian modeling of reliability with `brms`"
 author: "Shachar Hochman"
 date: last-modified
 image: reliability_shift.gif
+post-type: article
 categories: 
   - bayesian
   - reliability 

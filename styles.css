@@ -1,0 +1,19 @@
+.comment-form {
+  margin: 2rem 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.comment-form input,
+.comment-form textarea {
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.comment {
+  background: #f8f9fa;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 4px;
+}

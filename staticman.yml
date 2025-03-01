@@ -1,15 +1,15 @@
-# staticman.yml in repo root
-site: "https://cog-psych-res-app-b43552a94c8b.herokuapp.com"
-services:
-  github:
-    path: "comments/{fields.postUrl}"
-    filename: "comment-{@timestamp}"
-    branch: "main"
-    format: "yaml"
-    allowedFields: ["name", "email", "comment", "postUrl"]
-    requiredFields: ["name", "comment", "postUrl"]
-    moderaion: true
-    reCaptcha:
-      enabled: true
-      siteKey: 6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG
-      secret: 6LcE5eUqAAAAAEjdL5gz4iH_U3O_-KE-PTopT8e6
+comments:
+  allowedFields: ["name", "email", "comment", "postUrl"]
+  branch: "main"
+  commitMessage: "New comment by {fields.name}"
+  filename: "comment-{@timestamp}"
+  format: "yaml"
+  moderation: true
+  path: "comments/{fields.postUrl}"
+  requiredFields: ["name", "comment", "postUrl"]
+  transforms:
+    email: md5
+  reCaptcha:
+    enabled: true
+    siteKey: "6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG"
+    secret: "6LcE5eUqAAAAAEjdL5gz4iH_U3O_-KE-PTopT8e6"

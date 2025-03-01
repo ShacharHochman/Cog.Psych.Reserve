@@ -1,42 +1,53 @@
-async function submitComment() {
-  const formData = {
-    name: document.getElementById('comment-name').value,
-    email: document.getElementById('comment-email').value,
-    comment: document.getElementById('comment-content').value,
-    postUrl: window.location.pathname
-  };
+<section class="comments">
+  <h2>Discussion</h2>
 
-  try {
-    await fetch('/.netlify/functions/submit-comment', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData)
+  <!-- Comment Form -->
+  <form method="post" action="{{< meta staticman_url >}}/comments">
+    <input name="fields[postUrl]" type="hidden" value="{{< meta path >}}">
+    <input name="fields[name]" type="text" placeholder="Name" required>
+    <input name="fields[email]" type="email" placeholder="Email (private)">
+    <textarea name="fields[comment]" placeholder="Your insight..." required></textarea>
+
+    <!-- reCAPTCHA -->
+    <div class="g-recaptcha" data-sitekey="6LcE5eUqAAAAALafMJYtiiTzDe1uUE7vBlrzhvQG"></div>
+
+    <button type="submit">Post Comment</button>
+  </form>
+  <script src='https://www.google.com/recaptcha/api.js'></script>
+
+  <!-- This script will load existing comments -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentPath = '{{< meta path >}}';
+
+      fetch('https://raw.githubusercontent.com/ShacharHochman/Cog.Psych.Reserve/main/comments' + currentPath)
+        .then(response => {
+          if (!response.ok) throw new Error('No comments yet');
+          return response.json();
+        })
+        .then(comments => {
+          if (comments && comments.length > 0) {
+            const container = document.createElement('div');
+            container.className = 'comments-list';
+
+            comments.forEach(comment => {
+              const div = document.createElement('div');
+              div.className = 'comment';
+              div.innerHTML = `
+                <h4>${comment.name}</h4>
+                <p>${comment.comment}</p>
+                <small>${new Date(comment.date).toLocaleDateString()}</small>
+              `;
+              container.appendChild(div);
+            });
+
+            document.querySelector('.comments').insertBefore(
+              container,
+              document.querySelector('.comments form')
+            );
+          }
+        })
+        .catch(error => console.log('No comments found:', error));
     });
-
-    // Clear form and reload comments
-    document.getElementById('comment-content').value = '';
-    loadComments();
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-async function loadComments() {
-  try {
-    const response = await fetch(`/.netlify/functions/get-comments?postUrl=${encodeURIComponent(window.location.pathname)}`);
-    const comments = await response.json();
-
-    const container = document.querySelector('.comment-list');
-    container.innerHTML = comments.map(comment => `
-      <div class="comment">
-        <h4>${comment.name}</h4>
-        <p>${comment.comment}</p>
-        <small>${new Date(comment.date).toLocaleDateString()}</small>
-      </div>
-    `).join('');
-  } catch (error) {
-    console.error('Error loading comments:', error);
-  }
-}
+  </script>
+</section>

@@ -13,10 +13,10 @@ format:
 
 # Hey! I am Shachar! {.greeting}
 
-After completing my PhD in cognitive psychology (HUJI & BGU) and postdoc at the University of Surrey in 2024, I've stepped beyond the boundaries of academic mind research. I'm now applying the complex behavioral modeling, psychometrics, and advanced statistical techniques that I developed studying cognition in new domains. 
+After completing my PhD in cognitive psychology (HUJI & BGU) and postdoc at the University of Surrey in 2024, I've stepped beyond the boundaries of academic mind research. I'm now applying the complex behavioral modeling, psychometrics, and advanced statistical techniques that I developed studying cognition in new domains.
 
 This blog is where I'll revisit thought-provoking ideas from my cognitive psychology days and also demonstrate how similar approaches can reveal unexpected connections in entirely different fields.
 
-::: {.connect}
+::: connect
 Feel free to [connect with me](mailto:shachar.hochman@gmail.com) if you're interested in discussing these topics further!
 :::
