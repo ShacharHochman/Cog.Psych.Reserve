@@ -1,0 +1,1345 @@
+---
+title: "Beyond the Exclamation Points!!!"
+subtitle: "HDI-ROPE for Binary Outcomes: What Makes a Text Message Spam?"
+author: "Shachar Hochman"
+date: "2025-05-21"
+image: linear_to_logistic_persistent.gif
+post-type: article
+categories: 
+  - Bayesian
+  - logistic-regression
+  - hdi-rope
+  - spam-detection
+format:
+  html:
+    toc: true
+    self-contained: true
+    code-summary: "Show the R code"
+    code-fold: false
+    fig-align: center
+    math: mathjax
+    fig-cap-location: top    
+    dpi: 96                  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  fig.align = "center",
+  fig.width = 6, 
+  fig.height = 4,
+  out.width = "80%", 
+  echo = TRUE,               # Show code by default
+  warning = FALSE,           # Suppress warnings
+  message = FALSE            # Suppress messages
+)
+options(digits = 3, width = 90)
+```
+
+## Why Are We Here?
+
+**Goal**: Demonstrate a clearer approach to interpreting logistic regression using Bayesian methods and HDI-ROPE analysis, illustrated through real-world SMS spam detection.
+
+**Case Study**: Predicting whether an SMS message is spam based on linguistic toxicity patterns (captured through NLP+PCA), message length, and punctuation usage.
+
+**The Bottom Line**: This tutorial shows how Bayesian modeling combined with marginal effects and HDI-ROPE analysis creates a more intuitive workflow for binary outcome analysis---avoiding the notorious "log-odds" interpretation problem while tackling the practical challenge of spam detection.
+
+::: callout-caution
+## I make assumptions (too)!
+
+I assume you:
+
+\- Have basic familiarity with R and the tidyverse.
+
+\- Understand the fundamentals of regression analysis.
+
+\- Have encountered logistic regression before and familiar with the interpretation frustration.
+:::
+
+## The Messages Behind the Data: Understanding SMS Spam in Context
+
+Imagine receiving a text message: "URGENT!!! You have WON £1,000,000!!! Reply NOW with your bank details!!!"
+
+Your brain instantly recognizes this as spam---but how? It's not just excessive exclamation points or too-good-to-be-true offers. There's a complex pattern of linguistic signals distinguishing legitimate messages from spam, which can vary significantly across cultural and linguistic contexts.
+
+The dataset we're exploring comes from the [ExAIS SMS Spam project](https://www.kaggle.com/datasets/ysfbil/exais-sms-dataset) conducted in Nigeria, featuring 5,240 SMS messages (2,350 spam, 2,890 ham) collected from university community members aged 20--50.
+
+The data contain the SPAM/HAM (not spam) classification and the text message itself. Using NLP magic, dimensionality reduction, and text analysis, I extracted some additional features:
+
+-   **is_spam** - Our outcome variable; a binary classification indicating spam or legitimate communication.
+
+-   **pc_aggression & pc_incoherence** - Principal components I extracted from Google's Perspective API toxicity scores capturing sophisticated linguistic patterns:
+
+    -   **pc_aggression:** threatening, toxic, and insulting language patterns.
+
+    -   **pc_incoherence:** inflammatory, incoherent, or unsubstantial messages.
+
+-   **word_count** - The total number of words per message (includes squared term to capture non-linear relationships).
+
+-   **exclamation_count** - The number of exclamation points, a simple but telling spam feature.
+
+[Our central question is this]{.underline}: How do linguistic toxicity patterns (captured by PCA components) interact with message characteristics like length and punctuation to identify spam? And more importantly, how can we interpret these relationships meaningfully?
+
+In the note below you can find the **full pipeline with code** for the NLP and PCA code. 
+
+::: {.callout-note collapse="true"}
+## A Note on Advanced NLP Features
+
+Below is the exact, reproducible pipeline I used to transform raw text into the two tidy principal‑component dials (`pc_aggression`, `pc_incoherence`) you saw in the main post. Everything is wrapped in code‑chunks so you (or your future self) can copy‑paste the whole block into **Quarto/R Markdown** and run it end‑to‑end.
+
+```{r nlp-libraries, message = FALSE}
+# ── 1 · Load required packages ───────────────────────────────────────────
+library(tidyverse)     # data manipulation and pipes
+library(peRspective)   # R client for Google/Jigsaw Perspective API
+library(FactoMineR)    # Principal‑Component Analysis
+library(pROC)          # ROC curves (for later evaluation)
+```
+
+> **What is *peRspective*?**\
+> `peRspective` is a thin, tidyverse‑friendly wrapper around the [Perspective API](https://developers.perspectiveapi.com/). It takes care of batching requests, retrying on rate‑limits, and returning scores as a clean data frame. Before running the chunk below you'll need a free API key (set it once with `Sys.setenv(PERSPECTIVE_API_KEY = "<your‑key>")`).
+
+### Step 1 -- Obtain linguistic scores from the Perspective API
+
+Each message is sent to the API, which returns up to nine probabilities indicating the presence of attributes such as *toxicity*, *threat*, or *incoherence*.
+
+```{r perspective-scores, eval = FALSE}
+# ⚠️  Disabled by default to avoid accidental quota use.
+perspective_scores <- dataset_clean %>%
+  prsp_stream(
+    text        = message,          # column containing the SMS text
+    text_id     = text_id,          # unique identifier for safe joins
+    score_model = c("THREAT", "TOXICITY", "INSULT", "SPAM",
+                    "INFLAMMATORY", "INCOHERENT", "UNSUBSTANTIAL",
+                    "FLIRTATION", "PROFANITY"),
+    safe_output = TRUE,             # masks content the API flags as unsafe
+    verbose     = TRUE)             # progress messages
+```
+
+> **Development tip:**\
+> When iterating on downstream scripts, save the scores once (`write_csv()`) and reload them to avoid repeated network calls:
+>
+> ```{r load-saved-scores, eval = FALSE}
+> perspective_scores <- read_csv("~/perspective_scores_saved.csv")
+> ```
+
+### Step 2 -- Merge, clean, and prepare for PCA
+
+Occasionally a request fails or returns `NA`. We drop the few problematic rows and replace any missing attribute scores with zeros so PCA receives a complete numeric matrix.
+
+```{r merge-clean, eval = FALSE}
+scored_data <- dataset_clean %>%
+  left_join(perspective_scores, by = "text_id") %>%
+  filter(!(has_error = (!is.na(error) & error != "No Error"))) %>%
+  mutate(across(THREAT:PROFANITY, ~replace_na(.x, 0))) %>%
+  select(-SPAM, -FLIRTATION)   # remove two attributes found redundant here
+```
+
+### Step 3 -- Reduce nine correlated scores to two principal components
+
+Principal‑Component Analysis (PCA) rotates the nine‑dimensional attribute space until the first component captures the largest systematic variation, the second captures the next‑largest, and so on.
+
+```{r pca, eval = FALSE}
+pca_result <- PCA(scored_data %>% select(THREAT:PROFANITY),
+                  ncp   = 3,    # keep three components for inspection
+                  graph = FALSE)
+
+pca_scores <- as_tibble(pca_result$ind$coord) %>%
+  set_names(c("pc_aggression",     # roughly: threat + toxicity + insult
+              "pc_inflammatory",   # moderate mix (not used later)
+              "pc_incoherence")) %>%   # roughly: incoherent + unsubstantial
+  mutate(text_id = scored_data$text_id)
+```
+
+-   **`pc_aggression`** ranges from *neutral tone* to *overt hostility*.
+-   **`pc_incoherence`** tracks the continuum from *cohesive message* to *nonsensical or fragmentary text*.
+
+These two components retain ≈ 72 % of the total variance in the original nine attributes, providing a compact yet informative description of each message.
+
+### Step 4 -- Assemble the modelling table
+
+Finally, we merge the PCA scores back with the pre‑computed surface features (`word_count`, `exclamation_count`, etc.) so the eventual model can consider both **linguistic tone** and **formatting cues**.
+
+```{r assemble-model-data, eval = FALSE}
+model_data <- scored_data %>%
+  select(-THREAT:-PROFANITY) %>%
+  left_join(pca_scores, by = "text_id")
+```
+
+At this point `model_data` is a tidy, analysis‑ready data frame: one row per SMS, interpretable columns for tone and structure, and no missing values to trip up downstream methods.
+
+```{r include=FALSE}
+model_data <- readRDS("model_data.RDS")
+```
+:::
+
+## The Interpretation Challenge: <br> Why Binary Outcomes Are Tricky
+
+Logistic regression dominates binary outcome modeling, but before diving into its interpretation challenges, let's see why we can't just use the familiar linear regression like: 
+
+$$
+\text{spam} \;=\; \beta_0 \;+\; \beta_1 \times \text{aggression}
+                 \;+\; \beta_2 \times \text{word count} \;+\; \dots
+$$
+\
+Let me demonstrate with some simulated spam data.
+
+The first problem is that linear regression fundamentally misunderstands the nature of binary data. Let's examine the posterior predictive checks—these diagnostic plots ask "if our model were true, what would data look like?" By generating many fake datasets from each model and comparing them to reality, we can see whether the model truly grasps the data-generating process:
+
+![](tamed_combined_animation_final.gif){fig-align="center" width="100%"}
+
+Look at the stark mismatch! Our actual data (gray lines) consists solely of 0s and 1s—spam or not spam, no middle ground. Here's the crucial distinction: while both models predict probabilities internally (e.g., "this message has 70% chance of being spam"), this plot shows what type of *observed data* each model's mathematical structure implies. The logistic model (green bars) is specified for binary outcomes—it uses its internal probabilities to generate realistic 0s and 1s, creating those two distinct spikes. The linear model (red distribution), however, assumes continuous outcomes and generates spam "scores" spread out in a bell curve, as if we could observe a message being "0.7 spam."
+
+This mismatch isn’t trivial—it fundamentally undermines the model's validity for binary outcomes. When a model's mathematical structure doesn't match the basic nature of your outcome variable, its estimates of relationships become suspect. The linear model's equations assume continuous variation that doesn't actually exist in binary data. The effect sizes, confidence intervals, and predictions all come from a model that by definition grasps the data wrongfully.
+
+But the problems run deeper. Let's look at specific predictions across the range of our predictors:
+
+```{r echo = FALSE}
+# ---------------------------------------------------------------------------
+# Linear‐probability pathologies – legend only for the impossible point
+# ---------------------------------------------------------------------------
+library(tidyverse)
+library(patchwork)
+
+## 1  Simulate data ---------------------------------------------------------
+set.seed(271)
+n <- 200
+sms_df <- tibble(
+  pc_aggression     = rnorm(n),
+  word_count        = rpois(n, 20),
+  exclamation_count = rpois(n, 2)
+) %>% 
+  mutate(
+    p_true = plogis(
+      -1 +
+      3  * pc_aggression +
+      0.05 * (word_count - 20) -
+      0.05 * ((word_count - 20)^2) / 20 +
+      0.8  * exclamation_count
+    ),
+    is_spam = rbinom(n, 1, p_true)
+  )
+
+## 2  Linear probability model ---------------------------------------------
+lm_fit <- lm(
+  is_spam ~ pc_aggression,
+  data = sms_df
+)
+
+## 3  Grid & “impossible” prediction ---------------------------------------
+grid <- sms_df %>% 
+  summarise(across(-pc_aggression, median), .groups = "drop") %>% 
+  slice(rep(1, 250)) %>% 
+  mutate(pc_aggression = seq(min(sms_df$pc_aggression),
+                             max(sms_df$pc_aggression), length.out = 250)) %>% 
+  mutate(p_linear = predict(lm_fit, newdata = cur_data_all()))
+
+impossible_pt <- grid %>% 
+  filter(p_linear > 1) %>% 
+  slice_min(abs(p_linear - 1.25), n = 1)
+
+## 4  Panel A – jittered data (no legend) + OLS + impossible (legend) -------
+p_curve <- ggplot() +
+  ## plain grey data – legend suppressed
+  geom_point(data = sms_df,
+             aes(pc_aggression, is_spam),
+             position = position_jitter(height = 0.01, width = 0),
+             colour = "grey50", alpha = 0.35, size = 1.8,
+             show.legend = FALSE) +
+  ## red OLS line
+  geom_line(data = grid,
+            aes(pc_aggression, p_linear),
+            colour = "#CC3311", linewidth = 1.1,
+            show.legend = FALSE) +
+  ## impossible point – mapped to a dummy aesthetic for legend
+  geom_point(data = impossible_pt,
+             aes(pc_aggression, p_linear, shape = "impossible"),
+             fill = "black", colour = "white", stroke = 1.2, size = 4) +
+  scale_shape_manual(
+  name   = "",                               # legend title (keep empty)
+  values = c(impossible = 21),               # same point shape
+  labels = c(impossible = "Impossible prediction"),  # ← the legend text
+  guide  = guide_legend(
+    override.aes = list(fill = "black",
+                        colour = "white",
+                        stroke = 1.2,
+                        size   = 4)
+  )
+) +
+  geom_hline(yintercept = c(0, 1), linetype = "dotted", colour = "grey60") +
+  coord_cartesian(ylim = c(-0.5, 1.5)) +
+  labs(
+    title = "Linear Regression Predicts Impossible Values",
+    x     = "Aggression principal component",
+    y     = "Probability"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top",
+        plot.title = element_text(hjust = 0.5))
+
+p_curve
+```
+
+
+The linear model draws a straight line that blissfully crosses into impossible territory, predicting probabilities well above 100% for messages with high aggression scores. This isn't a minor edge case—any linear model with meaningful predictors will eventually produce impossible predictions at the extremes. It's mathematically inevitable when you try to force a straight line onto a bounded outcome.
+
+Among the many ways linear regression fails for binary data, we've seen two critical issues: it misunderstands the nature of the outcome (expecting continuous values when only 0s and 1s exist) and produces nonsensical predictions that escape probability bounds. 
+
+### How Logistic Regression Fixes It
+
+The mathematical solution of the (in)famous "S-curve" formula goes as follow:
+
+$$p(\text{spam}) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 \times \text{aggression} + \beta_2 \times \text{word count} + ...)}}$$
+
+
+Inside the parentheses is still a straight-line blend of your predictors; the logistic function simply transforms this into a valid probability between 0 and 1.
+
+
+```{r, echo = FALSE}
+library(tidyverse)
+library(gganimate)
+library(gifski)
+
+set.seed(271)
+n <- 200
+sms_df <- tibble(
+  pc_aggression     = rnorm(n),
+  word_count        = rpois(n, 20),
+  exclamation_count = rpois(n, 2)
+) %>% 
+  mutate(
+    p_true = plogis(
+      -1 +
+        3  * pc_aggression +
+        0.05 * (word_count - 20) -
+        0.05 * ((word_count - 20)^2) / 20 +
+        0.8  * exclamation_count
+    ),
+    is_spam = rbinom(n, 1, p_true)
+  )
+
+# Fit models
+lm_fit <- lm(is_spam ~ pc_aggression, data = sms_df)
+glm_fit <- glm(is_spam ~ pc_aggression, family = binomial, data = sms_df)
+
+# Create prediction grid
+grid_long <- sms_df %>%
+  summarise(across(-pc_aggression, median), .groups = "drop") %>%
+  slice(rep(1, 250)) %>%
+  mutate(
+    pc_aggression = seq(min(sms_df$pc_aggression),
+                        max(sms_df$pc_aggression), 
+                        length.out = 250),
+    Linear = predict(lm_fit, newdata = cur_data_all()),
+    Logistic = predict(glm_fit, newdata = cur_data_all(), type = "response")
+  ) %>%
+  pivot_longer(c(Linear, Logistic), 
+               names_to = "model", 
+               values_to = "prediction")
+
+# Animation with persistent shaded areas and text
+p_animated <- ggplot() +
+  # Persistent shaded impossible regions
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = 0,
+           fill = "#FFE5E5", alpha = 0.3) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 1, ymax = Inf,
+           fill = "#FFE5E5", alpha = 0.3) +
+  
+  # Data points
+  geom_point(data = sms_df,
+             aes(pc_aggression, is_spam),
+             position = position_jitter(height = 0.01, width = 0),
+             colour = "grey50", alpha = 0.35, size = 1.8) +
+  
+  # Horizontal lines
+  geom_hline(yintercept = c(0, 1), linetype = "dotted", colour = "grey60") +
+  
+  # Persistent text annotations for impossible values
+  annotate("text", x = -1.5, y = -0.2,
+           label = "Impossible!\np < 0",
+           colour = "#CC3311", size = 3.5, fontface = "italic") +
+  annotate("text", x = 1.5, y = 1.2,
+           label = "Impossible!\np > 1",
+           colour = "#CC3311", size = 3.5, fontface = "italic") +
+  
+  # The morphing line with color change
+  geom_line(data = grid_long,
+            aes(pc_aggression, prediction, colour = model, group = 1),
+            linewidth = 1.1) +
+  
+  # Color scale
+  scale_colour_manual(values = c(Linear = "#CC3311", Logistic = "#0077BB"),
+                      guide = "none") +
+  
+  # Exact coordinate system
+  coord_cartesian(ylim = c(-0.5, 1.5)) +
+  
+  # Dynamic labels including Y-axis
+  labs(
+    title = "{closest_state} Regression",
+    subtitle = "{if (closest_state == 'Linear') 'Predictions can exceed probability bounds [0, 1]' else 'Predictions constrained to valid probabilities'}",
+    x = "Aggression principal component",
+    y = "{if (closest_state == 'Linear') 'Predicted probability (unbounded)' else 'Predicted probability bounded to [0, 1]'}"
+  ) +
+  
+  # Theme with centered title
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 11, 
+                                 margin = margin(b = 10))
+  ) +
+  
+  # Animation
+  transition_states(model,
+                    transition_length = 2,
+                    state_length = 1.5) +
+  ease_aes('cubic-in-out')
+
+# Render
+# animate(
+#   p_animated,
+#   nframes = 100,
+#   fps = 25,
+#   width = 900,
+#   height = 600,
+#   res = 150,
+#   device = "png",
+#   type = "cairo",
+#   renderer = gifski_renderer("linear_to_logistic_persistent.gif")
+# )
+p_animated
+
+```
+
+The S-shaped curve elegantly solves both our problems: it respects the binary nature of data and keeps predictions within valid probability bounds. But this solution creates a new challenge: the curve's varying steepness means that the effect of any predictor depends on where you are on the curve. A one-unit increase in aggression might change spam probability by 20 percentage points in the middle of the curve but only 2 percentage points near the edges.
+
+### A Peek Behind the Curtain: Log-Odds
+
+To understand why interpretation becomes tricky, we need to peek at how logistic regression actually works. It achieves that S-curve by working in a transformed space called "log-odds."
+
+Think of it as changing measuring units---like converting temperature from Celsius to Fahrenheit, but for probabilities:
+
+-   **Odds** re-phrase probability: *30% chance of spam is equal in* *odds = 0.3 / 0.7 ≈ 0.43*.
+
+-   **Log-odds** take those odds and apply a logarithm. This stretches the probability scale: 0% becomes negative infinity, 100% becomes positive infinity, and everything else spreads out smoothly in between.
+
+On this stretched-out log-odds scale, we can finally draw our straight line (the right panel):
+
+$$
+\log\!\Bigl(\tfrac{p}{1-p}\Bigr)
+  \;=\;
+  \beta_0 \;+\; \beta_1 \times \text{aggression}
+           \;+\; \beta_2 \times \text{word count}
+           \;+\; \dots
+$$
+
+The left panel shows the jittered 0/1 spam labels (grey points) alongside the model's predicted probability\
+$\hat{p} = p(\text{spam}=1)$, plotted as a solid blue curve on $[0,1]$.\
+The right panel displays the same model on the log-odds scale with a dashed red line for\
+$\operatorname{logit}(\hat{p}) = \ln\!\bigl(\tfrac{\hat{p}}{1-\hat{p}}\bigr)$, which straightens the S-shaped curve.\
+In both panels, grey arrows trace one example predictor value and illustrate how it maps from the probability curve to the straight line in log-odds space.
+
+```{r logit-curtain, echo=FALSE, warning=FALSE, message=FALSE,fig.width  = 10,  fig.height = 7,  out.width = "100%"}
+# ── packages ────────────────────────────────────────────────────────────────
+library(tidyverse)
+library(patchwork)
+library(grid)      # textGrob()
+
+# ── simulate & fit (unchanged) ──────────────────────────────────────────────
+set.seed(271)
+n <- 200
+sms_df <- tibble(
+  pc_aggression     = rnorm(n),
+  word_count        = rpois(n, 20),
+  exclamation_count = rpois(n, 2)
+) |>
+  mutate(
+    p_true = plogis(
+      -1 + 3*pc_aggression +
+        0.05*(word_count - 20) -
+        0.05*((word_count - 20)^2)/20 +
+        0.8*exclamation_count
+    ),
+    is_spam = rbinom(n, 1, p_true)
+  )
+
+glm_fit <- glm(is_spam ~ pc_aggression, family = binomial, data = sms_df)
+
+grid <- tibble(
+  pc_aggression = seq(min(sms_df$pc_aggression),
+                      max(sms_df$pc_aggression), length.out = 250)
+) |>
+  mutate(
+    probability = predict(glm_fit, newdata = cur_data_all(), type = "response"),
+    log_odds    = predict(glm_fit, newdata = cur_data_all(), type = "link")
+  )
+
+# demo point
+x_demo <- quantile(grid$pc_aggression, .60)
+y_prob <- grid$probability[which.min(abs(grid$pc_aggression - x_demo))]
+y_log  <- grid$log_odds   [which.min(abs(grid$pc_aggression - x_demo))]
+
+sms_plot <- sms_df |>
+  mutate(jittered = pmax(-.02, pmin(1.02, jitter(is_spam, .02))))
+
+# ── panels (unchanged except x = NULL) ──────────────────────────────────────
+p_prob <- ggplot() +
+  geom_point(data = sms_plot,
+             aes(pc_aggression, jittered),
+             colour = "grey65", alpha = .35, size = 2.4) +
+  geom_line(data = grid,
+            aes(pc_aggression, probability),
+            colour = "#0077BB", linewidth = 1.2) +
+  geom_point(aes(x_demo, y_prob), colour = "#0077BB", size = 3) +
+  annotate("segment",
+           x = x_demo, xend = x_demo + diff(range(grid$pc_aggression))*.20,
+           y = y_prob, yend = y_prob,
+           arrow = arrow(length = unit(3,"mm")), colour = "grey40") +
+  scale_y_continuous(breaks = seq(0,1,.25), limits = c(-.05,1.05),
+                     labels = scales::percent) +
+  labs(
+    x = NULL,
+    y = expression(
+      "Predicted spam probability," ~~ 
+      hat(p) == P(spam == 1 ~ "|" ~ aggression)
+    )
+  ) +                            # ← closes labs() here
+  theme_minimal(base_size = 13)
+p_log <- ggplot() +
+  geom_line(data = grid,
+            aes(pc_aggression, log_odds),
+            colour = "#CC3311", linewidth = 1.2, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dotted", colour = "grey60") +
+  geom_point(aes(x_demo, y_log), colour = "#CC3311", size = 3) +
+  annotate("segment",
+           x = x_demo - diff(range(grid$pc_aggression))*.20, xend = x_demo,
+           y = y_log, yend = y_log,
+           arrow = arrow(length = unit(3,"mm")), colour = "grey40") +
+  scale_y_continuous(limits = c(-4,4)) +
+labs(
+    x = NULL,
+    y = expression(
+      "Predicted log-odds of spam," ~~ 
+      logit(hat(p)) == log(frac(hat(p), 1 - hat(p)))
+    )
+  ) +                            # ← closes labs() here
+  theme_minimal(base_size = 13)
+
+
+# ── centred x-axis label ────────────────────────────────────────────────────
+x_lab <- textGrob("Aggression principal component",
+                  gp = gpar(fontface = "bold", fontsize = 18))
+
+# ── combine & control row heights ───────────────────────────────────────────
+(p_prob | p_log) / wrap_elements(full = x_lab) +           # two rows
+  plot_layout(heights = c(9, 1)) +                         # NEW: shrink label row
+  plot_annotation(
+    title    = "A Peek Behind the Curtain: Log-Odds",
+    subtitle = "Red dashed line: the *same* model is perfectly straight once we switch units",
+    theme = theme(
+      plot.title    = element_text(hjust=.5, face="bold", size = 18),  # NEW: smaller
+      plot.subtitle = element_text(hjust=.5, size = 15, colour="grey30"),  # NEW: smaller
+      plot.caption  = element_text(hjust=.5, size = 13,  margin = margin(t = 4)),
+      plot.margin   = margin(t = 4, r = 4, b = 4, l = 4)               # tighten padding
+    )
+  )
+
+```
+
+## The Interpretation Problem
+
+Imagine explaining the model to a spam-filter engineer or product manager:
+
+> "A one-unit increase in the *aggression* principal component raises the **log-odds** of spam by 0.85."
+
+Cue blank stares.\
+So we translate to **odds ratios**:
+
+> "Each unit increase in *aggression* multiplies the odds of spam by **2.33** (e^0.85^)."
+
+Still murky! Even seasoned analysts struggle with odds because humans naturally think in **probabilities**, not odds. Add interaction terms (e.g., how aggression's effect changes with message length) and interpretation gets even thornier.
+
+I'm going to put in **tremendous effort to cut through that fog**---re-expressing results *exclusively* on the familiar 0 %--100 % probability scale, and showing you practical tricks to keep interpretations clear in Bayesian statistics.
+
+::: {.callout-note collapse="true"}
+## But Wait! Why Bayesian?
+
+The `marginaleffects` package beautifully transforms model results into interpretable probability statements. More on that later. I will not stop here but also combine it with Bayesian estimation to create an even more powerful analytical framework.
+
+Bayesian methods solve several technical problems that plague binary outcome models:
+
+### Complete Separation Issues
+
+**The Problem**: Complete separation occurs when a predictor perfectly divides outcome categories. Imagine if every message with more than 10 exclamation points was spam while no message with fewer was---traditional maximum likelihood estimation would produce infinite coefficient estimates.
+
+**The Bayesian Solution**: Priors act as natural regularizers, keeping estimates finite and meaningful even in extreme cases. Instead of model failure, we get sensible uncertainty quantification around our estimates. This is particularly important in spam detection where new tactics constantly emerge, potentially creating separation in specific feature combinations.
+
+### Robust Computation
+
+**The Problem**: Our model includes interactions between PCA components and text features---these complex relationships often cause convergence failures in traditional frameworks. Researchers are forced to simplify their models, potentially missing important patterns in how spam characteristics combine.
+
+**The Bayesian Solution**: Modern implementations like `brms` handle complex model structures that would break optimization-based methods, letting us build models that match our theoretical questions rather than computational constraints.
+
+This Bayesian foundation, combined with `marginaleffects` for interpretation, gives us the best of both worlds: robust estimation and intuitive communication of results.
+:::
+
+## Making Bayesian Binary Models Practical: From Priors to Inference
+
+There are two main obstacles that often discourage researchers from adopting Bayesian methods: choosing appropriate **priors** and interpreting **inference** from posterior distributions. My goal here is to show that both are surprisingly straightforward for logistic hierarchical models---especially when we combine the right tools.
+
+Let's build this model step by step, starting with prior specification:
+
+### The Prior Specification Problem
+
+When you fit a Bayesian logistic model in `brms`, your regression coefficients live on the **log-odds scale** (each β is a log-odds-ratio for a one-unit bump in the predictor). This creates an immediate headache: what does a "reasonable" prior look like for log-odds? Is `normal(0, 1)` too wide? Too narrow? It's hard to have intuitions about log-odds because we don't naturally think that way. How do we translate our existed knowledge (or intuitions) about effect sizes into appropriate priors for log-odds coefficients?
+
+There's a clever **heuristic** that can help us translate our familiar Cohen's *d* intuitions into the log-odds world.
+
+#### A Useful Translation Trick
+
+[Sánchez-Meca, Marín-Martínez, and Chacón-Moscoso (2003)](https://pubmed.ncbi.nlm.nih.gov/14664682/) developed a relationship between odds ratios and Cohen's *d* for meta-analytic contexts:
+
+$$d = log(OR) \times \frac{\sqrt{3}}{\pi}$$
+
+Rearranging gives us:
+
+$$log(OR) = d \times \frac{\pi}{\sqrt{3}}$$ Because a logistic distribution has variance π² / 3 while a standard normal has variance 1, multiplying a log-odds-ratio by √3 / π (≈ 0.551) rescales it into *d*. Handy, but only a rough guide---so wield with caution.
+
+We can use this as a **starting point** for prior specification. If we expect mostly small-to-medium effects (*d* ≈ 0.2-0.5), we can translate those familiar benchmarks into log-odds standard deviations.
+
+#### A Practical Workflow
+
+Here's how I use this approach:
+
+**Step 1: Think in Cohen's *d* terms**
+
+For spam detection, most individual features probably have small to medium effects:
+
+-   Small effect: *d* ≈ 0.2
+
+-   Medium effect: *d* ≈ 0.5
+
+-   Large effect: *d* ≈ 0.8
+
+**Step 2: Convert to log-odds standard deviation**
+
+Since we want unbiased estimates, we want our prior to be centered at zero (no effect), therefore we can set the standard deviation of our normal prior using:
+
+$$\sigma_{\log-odds} = d \times \frac{\pi}{\sqrt{3}}$$
+
+Let me show you how this works in practice:
+
+```{r prior-setup, echo = FALSE}
+library(brms)
+library(tidyverse)
+
+# Step 1: Decide on expected effect sizes
+# For spam detection, let's assume mostly small effects
+d_small <- 0.2
+d_medium <- 0.5
+
+# Step 2: Convert to log-odds scale
+sd_small <- d_small * pi / sqrt(3)   # ≈ 0.36
+sd_medium <- d_medium * pi / sqrt(3)  # ≈ 0.91
+
+# Let's see what these priors look like
+tibble(
+  log_odds = seq(-3, 3, by = 0.01)
+) %>%
+  mutate(
+    density_small = dnorm(log_odds, mean = 0, sd = sd_small),
+    density_medium = dnorm(log_odds, mean = 0, sd = sd_medium),
+    probability = plogis(log_odds)
+  ) %>%
+  pivot_longer(
+    cols = starts_with("density"),
+    names_to = "prior_type",
+    values_to = "density"
+  ) %>%
+  # Convert to factor with explicit level ordering
+  mutate(prior_type = factor(prior_type, 
+                            levels = c("density_small", "density_medium"),
+                            labels = c("Small effects (d=0.2)", 
+                                      "Medium effects (d=0.5)"))) %>%
+  ggplot(aes(x = log_odds, y = density, color = prior_type)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(
+    values = c("Small effects (d=0.2)" = "#2E8B57", 
+               "Medium effects (d=0.5)" = "#4682B4")
+  ) +
+  labs(
+    x = "Log-odds coefficient",
+    y = "Prior density",
+    color = "Expected effect size"
+  ) +
+  theme_minimal()
+```
+
+Small effects lead to narrow distributions, which creates stronger regularization. When we expect our predictors to have small effects (d = 0.2), the resulting prior standard deviation of \~0.36 keeps coefficients tightly concentrated around zero. This way we are preventing overfitting by shrinking coefficients toward zero unless the data provides strong evidence otherwise. In contrast, expecting medium effects (d = 0.5) gives us a wider prior (σ ≈ 0.91) that allows coefficients more freedom to deviate from zero.
+
+This makes intuitive sense: if we genuinely believe our features have small effects, we should be skeptical of large coefficient estimates and let the prior express that skepticism through increased shrinkage.
+
+There you go! We have our priors! Let's specify our model structure.
+
+### Choosing Predictors
+
+The choice of predictors typically depends on your goals---theory testing versus prediction optimization. Here, I've chosen predictors for tutorial purposes rather than optimal spam detection. Each one helps illustrate different aspects of Bayesian logistic regression interpretation:
+
+``` r
+  is_spam ~ (pc_aggression + pc_incoherence) * 
+    (word_count + exclamation_count)
+```
+
+These predictors give us different story types to tell:
+
+-   **pc_aggression**: "How does linguistic hostility signal spam?"
+
+-   **word_count**: "Do spammers prefer short punchy messages or longer sales pitches?"
+
+-   **exclamation_count**: "When do exclamation points become suspicious?"
+
+-   **Interactions**: "How do these patterns combine and depend on each other?"
+
+### Bringing It All Together: Fitting the Model in brms
+
+Now let's translate our prior intuitions and model structure into actual `brms` code. This is where everything comes together---our Cohen's d-derived priors meet our pedagogically-chosen predictors.
+
+``` r
+library(brms)
+library(bayestestR)
+
+# Scaling the predictors first
+
+model_data <- model_data %>%
+  mutate(
+    across(
+      all_of(c("pc_aggression",
+                    "word_count",
+                    "pc_incoherence",
+                    "exclamation_count")),
+      ~ as.numeric(
+        scale(.x)
+        )
+      )
+    )
+
+
+# Set our priors based on expected small-to-medium effects
+d_expected <- 0.3
+prior_sd <- d_expected * pi / sqrt(3)  # ≈ 0.54
+
+# Define priors for all coefficients
+priors <- c(
+  prior(normal(0, 0.54), class = b)  # All slopes get the same prior
+)
+
+# Fit the model
+spam_model <- brm(        
+  is_spam ~ (pc_aggression + pc_incoherence) * 
+            (word_count + exclamation_count),
+  data = model_data,
+  family = bernoulli(),
+  prior = priors,
+  cores = 4,
+  iter = 2000,
+  warmup = 1000,
+  chains = 4,
+  seed = 123
+)
+```
+
+```{r include = FALSE}
+library(brms)
+library(bayestestR)
+
+
+# Set our priors based on expected small-to-medium effects
+d_expected <- 0.3
+prior_sd <- d_expected * pi / sqrt(3)  # ≈ 0.54
+
+# Define priors for all coefficients
+priors <- c(
+  prior(normal(0, 0.54), class = b)  # All slopes get the same prior
+)
+
+model_data <- model_data %>%
+  mutate(
+    across(
+      all_of(c("pc_aggression",
+                    "word_count",
+                    "pc_incoherence",
+                    "exclamation_count")),
+      ~ as.numeric(
+        scale(.x)
+        )
+      )
+    )
+
+# Fit the model
+spam_model <- brm(
+  is_spam ~ (pc_aggression + pc_incoherence) * 
+            (word_count + exclamation_count),
+  data = model_data,
+  family = bernoulli(),
+  prior = priors,
+  cores = 4,
+  iter = 2000,
+  warmup = 1000,
+  chains = 4,
+  seed = 123,
+  ref = 0
+)
+```
+
+```{r include=FALSE}
+
+library(bayesplot)
+library(posterior)
+library(pROC)
+library(patchwork)
+library(ggplot2)
+
+# ── 0. Theme helpers ──────────────────────────────────────────
+title_style   <- theme(plot.title = element_text(hjust = 0.5))
+plot_padding  <- theme(plot.margin = margin(6, 6, 6, 6, "pt"))
+
+# ── 1. Posterior-predictive check ─────────────────────────────
+pp_plot <- pp_check(spam_model, type   = "bars",ndraws = 200) +
+  ggtitle("Posterior predictive check") +
+  title_style + plot_padding
+
+# ── 2.  R-hat plot  ───────────────────────────────────────────
+color_scheme_set("blue")                  # e.g. "blue", "brightblue", …
+pal <- color_scheme_get()                 # returns a named list
+
+rhat_df <- mcmc_rhat_data(rhat(spam_model)) |>
+  rename(rhat = value) |>
+  mutate(
+    rhat_band = case_when(                 # classify each R-hat
+      rhat <= 1.01 ~ "good",
+      rhat <= 1.05 ~ "ok",
+      TRUE         ~ "bad"
+    ),
+    rhat_col = case_when(                  # map bands -> palette
+      rhat_band == "good" ~ pal[["light"]],
+      rhat_band == "ok"   ~ pal[["mid"]],
+      TRUE                ~ pal[["dark"]]
+    )
+  )
+
+
+rhat_plot <- 
+  ggplot(rhat_df, aes(y = parameter, x = rhat)) +
+  geom_linerange(aes(xmin = 1, xmax = rhat, colour = rhat_col),
+                 linewidth = 1, show.legend = FALSE) +
+  geom_point(aes(colour = rhat_col), size = 3, show.legend = FALSE) +
+  scale_colour_identity() +
+    geom_vline(xintercept = 1, linetype = 1) +
+    geom_vline(xintercept = 1.01, linetype = 2) +
+    labs(x = expression(hat(R)), y = NULL) +
+    coord_cartesian(xlim = c(0.99, 1.015))  +
+    theme_minimal()+
+  ggtitle("R-hat (<1.01 indicates convergence)")
+
+
+# ── 4.  ROC curve & AUC  ──────────────────────────────────────
+pred_mean <- colMeans(posterior_epred(spam_model))
+roc_obj   <- pROC::roc(model_data$is_spam, pred_mean, quiet = TRUE)
+auc_val   <- as.numeric(pROC::auc(roc_obj))
+
+roc_data  <- data.frame(
+  fpr = 1 - roc_obj$specificities,
+  tpr = roc_obj$sensitivities
+)
+
+roc_plot <- ggplot(roc_data, aes(fpr, tpr)) +
+  geom_line(colour = "steelblue", linewidth = 1) +
+  geom_abline(linetype = "dashed") +
+  coord_equal() +
+  labs(
+    title = sprintf("ROC (AUC = %.3f)", auc_val),
+    x = "False-positive rate",
+    y = "True-positive rate"
+  ) +
+  theme_minimal(base_size = 11) +
+  title_style + plot_padding
+
+```
+
+Here are some basic diagnostic for the model:
+
+::: panel-tabset
+## Poseterior Predictive Check
+
+```{r}
+pp_plot
+```
+
+## R-hat
+
+```{r}
+rhat_plot
+```
+
+## ROC
+
+```{r}
+roc_plot
+```
+:::
+
+It's time to interpret the model's effects. But how?
+
+### HDI+ROPE: A Bayesian Path to Statistical Inference
+
+Traditional null hypothesis significance testing (NHST) with p-values pushed us into a binary world: an effect is either "significant" or "not significant" based on an arbitrary threshold (typically p \< .05). This approach has been criticized extensively---not least because it collapses a continuous measure of evidence into a dichotomous decision. It's like trying to describe a complex spam pattern with just "suspicious" or "not suspicious"---when in reality, there's a rich spectrum of possible spam indicators.
+
+Bayesian inference offers a more nuanced perspective through **posterior distributions**. Instead of a single p-value, we get an entire distribution of plausible parameter values. But this richness creates a new challenge: how do we make practical decisions without being overwhelmed by distributional complexity?
+
+John Kruschke ([2014](https://www.amazon.com/Doing-Bayesian-Data-Analysis-Tutorial/dp/0124058884), [2018](https://link.springer.com/article/10.3758/s13423-017-1272-1)) developed a powerful framework that provides a principled alternative to traditional significance testing.
+
+#### The Highest Density Interval (HDI)
+
+The HDI contains a specified percentage of the most probable parameter values, where every value inside the interval has higher probability density than any value outside. Unlike frequentist confidence intervals, the HDI has a direct probabilistic interpretation: given our data and model, there's an X% probability that the true parameter value lies within the X% HDI (e.g., 95% probability for a 95% HDI).
+
+While Kruschke originally recommended using 95% HDIs (and later suggested 89% as potentially better), we'll take advantage of the full posterior distribution (100% HDI)---using the complete picture of uncertainty in our spam analysis.
+
+#### The Region of Practical Equivalence (ROPE)
+
+The ROPE is essentially us asking, "What effect is so small that I wouldn't care about them in practice?" For illustration, we might set our ROPE at **±5%**---meaning any feature that changes spam probability by less than 5 percentage points either way is considered practically negligible.
+
+Importantly, ROPE represents a shift from traditional significance testing to **effect size reasoning**. Rather than asking "Is there any effect, no matter how small?" (significance testing), we ask "Is the effect large enough to matter?" (effect size evaluation). If adding one exclamation point increases spam probability by 0.01%, that might be statistically detectable with enough data, but no spam filter designer would ever notice or care. The ROPE lets us define this "too small to matter" range---distinguishing between effects that are statistically detectable versus practically meaningful for spam detection. This focus on effect magnitude rather than mere detectability represents a fundamental shift toward more substantive scientific inference.
+
+#### Making Decisions with HDI+ROPE
+
+When using the full posterior distribution approach, the decision rules are straightforward. Using our 5% example threshold (though other values may be appropriate for different contexts):
+
+1.  **Reject the null hypothesis** if less than 2.5% of the posterior distribution falls within the ROPE. This means we have strong evidence for a practically meaningful effect. The visualization below shows this as a distribution clearly extending beyond our the ROPE boundaries.
+
+2.  **Accept the null hypothesis** if more than 97.5% of the posterior distribution falls within the ROPE. This means we have evidence for the practical absence of an effect---the parameter is essentially equivalent to zero in spam detection terms. This appears as a distribution tightly concentrated within the ROPE zone.
+
+3.  **Remain undecided** if the percentage falls between these thresholds. The evidence is inconclusive at our current precision level, shown as distributions that substantially span the ROPE boundaries.
+
+The following visualization demonstrates these decision rules in action, showing four distinct patterns you might encounter when analyzing spam features. Each scenario represents a different relationship between the posterior distribution and our example ±5% ROPE, illustrating how the same statistical framework can yield different conclusions depending on where the evidence falls. Notice how some effects might be statistically detectable (consistent small impacts) yet still fall within our practical equivalence zone---a nuance that traditional p-value approaches often miss.
+
+```{r echo = FALSE, warning=FALSE, message= FALSE,fig.width=12, fig.height=10, out.width="100%"}
+library(tidyverse)
+library(bayestestR)
+library(patchwork)
+library(glue)
+
+library(tidyverse)
+library(bayestestR)
+library(patchwork)
+library(glue)
+
+# Configuration -----------------------------------------------------------
+set.seed(271)  # Reproducibility
+n_samples <- 3000
+rope_range <- c(-5, 5)  # ±5% ROPE
+
+# Matching the target plot colors
+spam_colors <- list(
+  within_rope = "gray80",      # Match target plot
+  outside_rope = "skyblue",    # Match target plot
+  rope_border = "black",       # Black dashed lines
+  text = "#2F4F4F"            # Keep text color
+)
+
+# Create Scenarios -------------------------------------------------------
+create_scenarios <- function() {
+  list(
+    "Aggressive Toxicity" = list(
+      samples = rnorm(n_samples, mean = 12, sd = 2.5),
+      title = "Rejecting H0",
+      subtitle = "Clear spam indicator"
+    ),
+    
+    "Message Formality" = list(
+      samples = rnorm(n_samples, mean = 0.3, sd = 1.2),
+      title = "Accepting H0",      
+      subtitle = "No practical effect"
+    ),
+    
+    "Mixed Linguistic Signals" = list(
+      samples = rnorm(n_samples, mean = 4.5, sd = 3.8),
+      title = "Uncertainty",
+      subtitle = "Inconclusive"
+    ),
+    
+    "Punctuation Density" = list(
+      samples = rnorm(n_samples, mean = 2.8, sd = 0.8),
+      title = "Detectable but Negligible",
+      subtitle = "Effect is not zero, yet too small to matter"
+    )
+  )
+}
+
+# Data Processing --------------------------------------------------------
+process_scenario <- function(samples, scenario_name) {
+  hdi_result <- hdi(samples, ci = 0.95)
+  rope_result <- rope(samples, range = rope_range)
+  dens <- density(samples, n = 512)
+  
+  stats <- list(
+    median = median(samples),
+    ci_lower = quantile(samples, 0.025),
+    ci_upper = quantile(samples, 0.975),
+    rope_pct = rope_result$ROPE_Percentage * 100
+  )
+  
+  plot_data <- tibble(
+    x = dens$x,
+    y = dens$y,
+    scenario = scenario_name
+  )
+  
+  return(list(data = plot_data, stats = stats))
+}
+
+# Plot Creation ----------------------------------------------------------
+create_plot <- function(scenario_name, scenario_info) {
+  result <- process_scenario(scenario_info$samples, scenario_name)
+  plot_data <- result$data
+  stats <- result$stats
+  
+  # Split data into three segments
+  left_tail <- plot_data %>% filter(x < rope_range[1])
+  middle <- plot_data %>% filter(x >= rope_range[1] & x <= rope_range[2])
+  right_tail <- plot_data %>% filter(x > rope_range[2])
+  
+  # Add boundary points for smooth transitions
+  if(nrow(left_tail) > 0 && nrow(middle) > 0) {
+    # Interpolate y value at the boundary
+    y_at_boundary <- approx(plot_data$x, plot_data$y, xout = rope_range[1])$y
+    left_tail <- bind_rows(left_tail, 
+                          tibble(x = rope_range[1], y = y_at_boundary, scenario = scenario_name))
+    middle <- bind_rows(tibble(x = rope_range[1], y = y_at_boundary, scenario = scenario_name),
+                       middle)
+  }
+  
+  if(nrow(middle) > 0 && nrow(right_tail) > 0) {
+    y_at_boundary <- approx(plot_data$x, plot_data$y, xout = rope_range[2])$y
+    middle <- bind_rows(middle,
+                       tibble(x = rope_range[2], y = y_at_boundary, scenario = scenario_name))
+    right_tail <- bind_rows(tibble(x = rope_range[2], y = y_at_boundary, scenario = scenario_name),
+                           right_tail)
+  }
+  
+  ggplot() +
+    
+    # Plot each segment with appropriate color
+    {if(nrow(left_tail) > 0) 
+      geom_area(data = left_tail, aes(x = x, y = y), 
+                fill = spam_colors$outside_rope, alpha = 0.8)} +
+    
+    {if(nrow(middle) > 0)
+      geom_area(data = middle, aes(x = x, y = y), 
+                fill = spam_colors$within_rope, alpha = 0.8)} +
+    
+    {if(nrow(right_tail) > 0)
+      geom_area(data = right_tail, aes(x = x, y = y), 
+                fill = spam_colors$outside_rope, alpha = 0.8)} +
+    
+    # Add outline
+    geom_line(data = plot_data, aes(x = x, y = y), 
+              color = "black", linewidth = 1) +
+    
+    # ROPE boundaries (matching target style)
+    geom_vline(xintercept = rope_range, 
+               linetype = "dashed", 
+               color = spam_colors$rope_border,
+               linewidth = 1) +
+    
+    # Zero line
+    geom_vline(xintercept = 0,
+               color = "black",
+               linetype = "solid", 
+               linewidth = 0.5) +
+    
+    # Clean styling matching target
+    labs(
+      title = scenario_info$title,
+      subtitle = scenario_info$subtitle,
+      x = "Effect on Spam Probability (%)",
+      y = NULL
+    ) +
+    
+    theme_minimal(base_size = 20) +  # Match target base_size
+    theme(
+      plot.title = element_text(size = 24, face = "bold",
+                                margin = margin(b = 10)),
+      plot.subtitle = element_text(size = 20, color = "gray50",
+                                   margin = margin(b = 20)),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_line(color = "gray90", linewidth = 0.4),
+      axis.text = element_text(size = 16),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.title = element_text(size = 20,
+                                margin = margin(t = 10)),
+      plot.margin = margin(20, 20, 20, 20),
+      panel.background = element_blank(),
+      plot.background = element_blank(),
+      panel.spacing = unit(1.5, "lines")
+    )
+}
+
+# Create Dashboard -------------------------------------------------------
+create_dashboard <- function() {
+  scenarios <- create_scenarios()
+  plots <- map2(names(scenarios), scenarios, create_plot)
+  
+  combined <- wrap_plots(plots, ncol = 2, nrow = 2) +
+    plot_layout(heights = c(1, 1))
+  
+  combined +
+    plot_annotation(
+      title = "HDI+ROPE Inference: SMS Spam Detection Features",
+      subtitle = "ROPE (Region of Practical Equivalence): ±5% | Full posterior distributions shown",
+      caption = "Gray areas within ROPE, blue areas outside ROPE. Dashed lines show ROPE boundaries.",
+      theme = theme(
+        plot.title = element_text(size = 28, face = "bold", hjust = 0.5,
+                                  margin = margin(b = 15)),
+        plot.subtitle = element_text(size = 22, hjust = 0.5, color = "gray60",
+                                     margin = margin(b = 25)),
+        plot.caption = element_text(size = 18, hjust = 0.5, color = "gray50",
+                                    margin = margin(t = 20)),
+        plot.background = element_blank(),
+        plot.margin = margin(20, 20, 20, 20)
+      )
+    )
+}
+
+# Create the visualization -----------------------------------------------
+dashboard <- create_dashboard()
+print(dashboard)
+```
+
+### Analyzing the Spam data with `marginaleffects` and `bayestestR`
+
+After this conceptual introduction, how do we actually implement HDI+ROPE in practice? We'll harness two powerful R packages that make this analysis both rigorous and accessible.
+
+#### Why `marginaleffects` for Logistic Regression?
+
+This tutorial happened to be already too long, so we won't dive deeply into why `marginaleffects` is transformative for logistic regression analysis. But in brief, this package solves several critical pain points:
+
+-   **Meaningful effect sizes**: Rather than wrestling with log-odds coefficients that nobody intuitively understands, `marginaleffects` automatically translates everything to the probability scale---telling us how spam probability actually changes, not just abstract log-odds ratios. We can't escape logistic regression's inherent property where effects vary across different regions of the S-curve, but we can measure and report these varying effects in a transparent, interpretable way.
+
+-   **Interaction interpretation made simple:** Our model includes four interactions ((A+B)\*(C+D)), which would traditionally require careful algebra and chain rule calculations. The package handles all the calculus behind the scenes.
+
+-   **Uncertainty propagation done right:** Every estimate comes with properly computed standard errors that account for the non-linear transformations inherent in logistic regression.
+
+-   **Seamless Bayesian integration:** The package works identically with `brms` models as with frequentist ones, automatically extracting posterior draws when needed. This means our workflow remains consistent whether we're computing average marginal effects or testing complex hypotheses.
+
+For a comprehensive exploration of these capabilities, Andrew Heiss provides an excellent deep dive [here](https://www.andrewheiss.com/blog/2022/05/20/marginalia/).
+
+#### Why `bayestestR` for ROPE?
+
+While `marginaleffects` handles the effect computation, `bayestestR` provides the decision-making framework. It offers battle-tested functions to calculate the proportion of the posterior distribution falling within our ROPE. This seamless integration means we can move from posterior distributions to practical decisions without manual probability calculations or custom functions.
+
+#### Making Sense of the Results
+
+Let's see this powerful combination in action by computing the average marginal effects for each predictor. These tell us how much each feature changes the probability of spam classification, averaged across all observations in our data:
+
+```{r}
+library(marginaleffects)
+library(tidybayes)
+library(ggdist)
+
+rope = c(-0.05,0.05)
+ci  = 1.0
+
+main_effects <- avg_slopes(spam_model,type = "response")
+
+bayestestR::ci(main_effects,ci = ci, method = "HDI")
+```
+
+Since we standardized all predictors before analysis, these effects represent the impact of a one standard deviation change in each feature.
+
+Looking solely on the HDIs, the first thing that jumps out is that all four predictors main effects show "statistically significant" effects in the traditional sense---not a single HDI includes zero.
+
+In the old world of p-values, we'd declare victory---four significant predictors! Pop the champagne! But wait... let's look at what happens when we apply our HDI+ROPE examination:
+
+```{r}
+rope(main_effects ,range = rope,ci = ci)
+```
+
+Remember, we set our ROPE at ±5% (e.g., ±0.05 probability points)---any effect smaller than a 5 percentage point change in spam probability is too small to matter for practical spam filtering. Now watch what happens:
+
+Two of our four "statistically significant" predictors fall predominantly within the ROPE:
+
+-   **exclamation_count**: 99.92% of the posterior is inside ROPE - supporting the null hypothesis
+-   **pc_aggression**: 86.83% of the posterior is inside ROPE - which is an inconclusive result that leans toward the null hypothesis. 
+
+The other two predictors are showing practical significance:
+
+-   **pc_incoherence**: 0% inside the ROPE (averaging around -16.5%)
+-   **word_count**: 0% inside the ROPE (averaging around +8%)
+
+This is exactly why HDI+ROPE analysis is so powerful. Traditional significance testing would have given us four "significant" results without distinguishing their practical importance. Our Bayesian approach reveals which effects actually matter: linguistic incoherence strongly signals legitimate messages (reducing spam probability by about 16.5%), while longer messages are more likely to be spam (increasing probability by about 8%).
+
+```{r echo = FALSE, warning=FALSE, message= FALSE,fig.width=10, fig.height=8}
+draws_main_effect <- get_draws(main_effects, shape = "rvar") %>% 
+    as.data.frame() |>
+    mutate(
+        term = factor(term, levels = sort(unique(term),decreasing = T))  # set A–Z order
+    )
+
+rope_bound <- 0.05
+draws_main_effect |>
+    ggplot(aes(
+        y     = term,
+        xdist = rvar,
+        fill  = after_stat(abs(x) < rope_bound)
+    )) +
+    stat_slab(colour = "black", linewidth = 0.5) +
+    geom_vline(xintercept = c(-rope_bound, rope_bound), linetype = "dashed") +
+    geom_vline(xintercept = 0, colour = "black", linewidth = 0.5) +
+    scale_fill_manual(values = c("skyblue", "gray80")) +
+    labs(
+        x    = "Effect on Spam Probability (%)",
+        y    = "Predictor",
+        fill = "Within ROPE"
+    ) +
+    theme_minimal(base_size = 20)
+```
+
+The visualization brings this distinction to life. The gray distributions (exclamation_count and pc_aggression) cluster around zero, mostly contained within our ROPE boundaries—statistically detectable but practically negligible. In contrast, both pc_incoherence and word_count distributions (in blue) extend well beyond the ROPE. The incoherence effect is our strongest predictor, while the positive word_count effect suggests that spammers tend to write longer messages—perhaps needing more words to spin their tales of exotic princes or miracle cures.
+
+##### Exploring Interactions
+
+So far, we've examined how each feature independently affects spam probability. But real-world spam detection is more nuanced---the impact of one feature often depends on the context provided by others. With our model specification inspecting interactions, we're explicitly allowing for these interdependencies.
+
+When working with continuous predictors, interactions create a little twist: the effect of one variable literally changes as we move along the range of another variable. Think of it this way---the impact of aggressive language on spam probability might be minimal in very short messages (where there's little room for aggression to manifest) but could become substantial in longer messages (where sustained aggressive tone becomes more apparent).
+
+To capture these shifting relationships, we need to examine how effects vary across different contexts. The `avg_slopes` function with `datagrid` helps us do exactly this---it calculates the average effect across specified points along the moderating variable's distribution. This gives us a single summary measure of how strong the interaction effect is overall.
+
+Let me demonstrate with our four interaction pairs:
+
+```{r}
+# Interaction 1: How does pc_incoherence's effect vary with message length?
+incoherence_by_wordcount <- avg_slopes(
+    spam_model,
+    variables = "pc_incoherence",
+    newdata   = datagrid(
+        word_count = quantile(model_data$word_count, 
+                            probs = c(.05, .25, .50, .75, .95))
+    ),
+    type      = "response"
+)
+
+# Interaction 2: How pc_incoherence's effect changes with exclamation count
+incoherence_by_exclamation <- avg_slopes(
+    spam_model,
+    variables = "pc_incoherence",
+    newdata   = datagrid(
+        exclamation_count = quantile(model_data$exclamation_count, 
+                                   probs = c(.05, .25, .50, .75, .95))
+    ),
+    type      = "response"
+)
+
+# Interaction 3: How pc_aggression's effect changes with exclamation count
+aggression_by_exclamation <- avg_slopes(
+    spam_model,
+    variables = "pc_aggression",
+    newdata   = datagrid(
+        exclamation_count = quantile(model_data$exclamation_count, 
+                                   probs = c(.05, .25, .50, .75, .95))
+    ),
+    type      = "response"
+)
+
+# Interaction 4: How pc_aggression's effect changes with word count
+aggression_by_wordcount <- avg_slopes(
+    spam_model,
+    variables = "pc_aggression",
+    newdata   = datagrid(
+        word_count = quantile(model_data$word_count, 
+                            probs = c(.05, .25, .50, .75, .95))
+    ),
+    type      = "response"
+)
+
+bind_rows(
+rope(incoherence_by_wordcount, range = rope, ci = ci) %>%
+  mutate(Parameter = "incoherence × word_count"),
+
+rope(incoherence_by_exclamation, range = rope, ci = ci) %>%
+  mutate(Parameter = "incoherence × exclamation"),
+
+rope(aggression_by_exclamation, range = rope, ci = ci) %>%
+  mutate(Parameter = "aggression × exclamation"),
+
+rope(aggression_by_wordcount, range = rope, ci = ci) %>%
+  mutate(Parameter = "aggression × word_count")
+)
+```
+
+Looking at these interaction results, distinct patterns emerge across our four combinations. The two interactions involving linguistic incoherence show substantial effects that completely escape our ROPE boundaries (0% inside). The aggression interactions tell a more varied story—the aggression × exclamation interaction is shy from a meaningful practical importance with only 9.93% falling within the ROPE, while the aggression × word_count interaction is non decisive at 63.48% inside the ROPE.
+
+Think about what this means in practical terms. When a message scores high on incoherence---perhaps it's a hastily typed personal message or an auto-generated notification with templated chunks---it's substantially less likely to be spam. This effect averages around -20% across different message lengths and punctuation patterns. The consistency is striking: whether it's a brief "Running late, see u soon!" or a longer rambling message full of typos and incomplete thoughts, linguistic incoherence signals authenticity rather than commercial intent.
+
+These patterns reveal how spam characteristics combine in practice. The incoherence effect remains robust across different contexts—whether messages are short or long, heavily punctuated or not, linguistic incoherence consistently signals legitimate communication with effects around -17% to -19%. This stability suggests that real human messiness in texting transcends other message characteristics and trustworthiness.
+
+The aggression × exclamation interaction deserves special attention. While aggressive language alone showed negligible main effects, its combination with heavy exclamation mark usage could create a meaningful spam signal. This makes intuitive sense: the pattern of aggressive tone plus excessive punctuation ("URGENT!!! CLAIM NOW!!!") represents a classic spam signature that our model successfully identifies. The interaction captures something neither component could detect alone—the multiplicative effect of multiple spam tactics used together.
+
+Here's the visualization showing all four interaction effects:
+
+```{r echo = FALSE, warning=FALSE, message= FALSE,fig.width=10, fig.height=8}
+
+# Extract draws as rvars for each interaction
+draws_df <- bind_rows(
+    get_draws(incoherence_by_wordcount, shape = "rvar") %>% 
+        as.data.frame() %>%
+        mutate(interaction = "incoherence × word_count"),
+    get_draws(incoherence_by_exclamation, shape = "rvar") %>% 
+        as.data.frame() %>%
+        mutate(interaction = "incoherence × exclamation"),
+    get_draws(aggression_by_exclamation, shape = "rvar") %>% 
+        as.data.frame() %>%
+        mutate(interaction = "aggression × exclamation"),
+    get_draws(aggression_by_wordcount, shape = "rvar") %>% 
+        as.data.frame() %>%
+        mutate(interaction = "aggression × word_count")
+)
+
+# Create the visualization
+draws_df %>% 
+  ggplot(aes(y = interaction,
+             xdist = rvar,
+             fill = after_stat(abs(x) < 0.05))) +
+  stat_slab(           
+    colour    = "black",
+    linewidth = .5      
+  ) +
+  geom_vline(xintercept = c(-0.05, 0.05), linetype = "dashed") +
+  scale_fill_manual(values = c("skyblue","gray80")) +
+  labs(x   = "Effect on Spam Probability (%)",
+       y   = "Interaction",
+       fill = "Within ROPE") +
+  geom_vline(xintercept = 0, colour = "black", linewidth = .5) +
+  theme_minimal(base_size = 20)
+
+
+```
+
+## Wrapping Up: A New Lens for Binary Classification
+
+We started this journey frustrated with log-odds coefficients that nobody could interpret. Through the combination of Bayesian inference, marginal effects, and HDI+ROPE analysis, we've transformed an opaque logistic regression into a story that is easier to understand.
+
+
+But the real victory here isn't just about spam detection. It's about the analytical framework we've demonstrated. We tackled one of Bayesian analysis's most intimidating challenges---setting priors for log-odds coefficients---by developing a practical heuristic that translates familiar Cohen's d effect sizes into appropriate prior distributions. By combining `brms` for robust Bayesian estimation, `marginaleffects` for interpretable effect sizes, and `bayestestR` for principled decision-making, we've created a workflow that turns statistical significance into practical insight. No more explaining odds ratios to confused stakeholders. No more pretending that p \< 0.05 means something matters in the real world.
+
+The HDI+ROPE approach deserves special emphasis. It elegantly solves the fundamental tension in applied statistics: distinguishing between effects we can detect and effects that actually matter. In our analysis, we found multiple "statistically significant" predictors that were practically useless---a distinction that traditional methods would have missed entirely.
+
+For practitioners working with binary outcomes---whether in spam detection, medical diagnosis, customer churn, or any other domain---this framework offers a path forward. Set your ROPE based on domain expertise, specify your priors using the Cohen's d translation trick, fit your model with confidence, and let the posterior distributions tell you not just what's real, but what's worth caring about. The result is statistical analysis that speaks the language of practical decision-making, turning the notorious complexity of logistic regression into insights that drive action.
+
+::: {.callout-note collapse="true" appearance="minimal"}
+##### *Session Info*
+
+```{r}
+sessioninfo::session_info()
+```
+:::
+

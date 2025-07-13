@@ -9,6 +9,8 @@ website:
         href: https://www.s-hochman.com
       - icon: github
         href: https://github.com/ShacharHochman/Cog.Psych.Reserve
+      - text: "{{< iconify fa6-brands bluesky size=1.1em title='Bluesky' >}}"
+        href: https://bsky.app/profile/hochmanshachar.bsky.social
       - icon: linkedin
         href: https://www.linkedin.com/in/shachar-hochman-phd
       - icon: twitter

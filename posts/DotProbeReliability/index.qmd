@@ -458,7 +458,7 @@ Reminder: our example deals with "split-half" reliability, a type of "internal c
 
 # The Chen et al. Model
 
-[Chen et al.](https://doi.org/10.1016/j.jml.2012.11.001) propose a complementary approach, and focusing on the within-subject trial-level variance. In doing so, they show that ignoring this cross‐trial variance (sometimes referred to as $\sigma_0$) can lead to systematically underestimated reliability, especially for difference scores.
+[Chen et al.](https://doi.org/10.1016/j.neuroimage.2021.118647) propose a complementary approach, and focusing on the within-subject trial-level variance. In doing so, they show that ignoring this cross‐trial variance (sometimes referred to as $\sigma_0$) can lead to systematically underestimated reliability, especially for difference scores.
 
 ### Why Model Cross‐Trial Variance?
 
